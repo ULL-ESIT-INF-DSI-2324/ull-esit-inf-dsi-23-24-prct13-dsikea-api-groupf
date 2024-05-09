@@ -18,11 +18,14 @@ transactionRouter.post('/transactions', async (req, res) => {
 
   // Validate entity
   let entityModel;
+  let filter = {};
   try {
     if (entity.type === 'Customer') {
-      entityModel = await Customer.find(entity.nif.toString());
+      filter = { nif: entity.nif.toString() };
+      entityModel = await Customer.find(filter);
     } else if (entity.type === 'Provider') {
-      entityModel = await Provider.find(entity.cif.toString());
+      filter = { cif: entity.cif.toString() };
+      entityModel = await Provider.find(filter);
     } else {
       return res.status(400).send('Invalid entity type');
     }
