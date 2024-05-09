@@ -45,6 +45,11 @@ transactionRouter.post('/transactions', async (req, res) => {
     }
     totalAmount += furnitureModel.price * item.quantity;
     furnitureModel.stock -= item.quantity;
+    try {
+      await furnitureModel.save();
+    } catch (e) {
+      return res
+    }
   }
 
   // Create transaction
