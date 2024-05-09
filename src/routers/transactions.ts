@@ -53,6 +53,7 @@ transactionRouter.post('/transactions', async (req, res) => {
           price: item.body.price,
           stock: item.quantity
         });
+        totalAmount += newFurniture.price * item.quantity;
         await newFurniture.save();
       } else if (!furnitureModel) {
         return res.status(404).send('Furniture not found');
