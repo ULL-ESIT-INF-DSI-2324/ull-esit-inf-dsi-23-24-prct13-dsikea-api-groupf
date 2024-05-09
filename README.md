@@ -34,6 +34,7 @@ El principal objetivo de esta práctica es diseñar y desarrollar un API RESTful
 4. Desarrollar de manera defensiva, anticipando y manejando posibles errores y situaciones excepcionales que puedan surgir durante el uso del API.
 5. Documentar exhaustivamente el código desarrollado, incluyendo comentarios claros y concisos en el código fuente y generando una documentación externa que explique el funcionamiento del API y cómo utilizarlo.
 6. Realizar pruebas unitarias y de integración para garantizar la funcionalidad correcta del API en diferentes escenarios.
+7. Desplegar el API en Render con la base de datos de MongoDB desplegada en la nube.
 
 ---
 
@@ -55,6 +56,7 @@ El principal objetivo de esta práctica es diseñar y desarrollar un API RESTful
 - [Mocha](https://mochajs.org/)
 - [Chai](https://www.chaijs.com/)
 - [MongoDB](https://www.mongodb.com/cloud/atlas/)
+- [Render](https://render.com/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [SonarCloud](https://sonarcloud.io)
 - [Guía de Markdown](https://markdown.es/sintaxis-markdown/#links)
