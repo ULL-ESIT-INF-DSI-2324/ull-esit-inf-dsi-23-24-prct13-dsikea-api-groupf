@@ -30,14 +30,10 @@ El principal objetivo de esta práctica es diseñar y desarrollar un API RESTful
 
 1. Implementar operaciones CRUD (Crear, Leer, Actualizar y Borrar) para las entidades principales de la tienda de muebles: clientes, proveedores, muebles y transacciones.
 2. Utilizar MongoDB/MongoDB Atlas como sistema de base de datos no relacional, junto con Mongoose para la gestión de la base de datos desde Node.js.
-3. Desplegar el API en la plataforma Cyclic para su disponibilidad y accesibilidad remota.
-4. Aplicar buenas prácticas de diseño de APIs RESTful, incluyendo el uso de rutas, verbos HTTP adecuados y manejo de errores.
-5. Desarrollar de manera defensiva, anticipando y manejando posibles errores y situaciones excepcionales que puedan surgir durante el uso del API.
-6. Documentar exhaustivamente el código desarrollado, incluyendo comentarios claros y concisos en el código fuente y generando una documentación externa que explique el funcionamiento del API y cómo utilizarlo.
-7. Realizar pruebas unitarias y de integración para garantizar la funcionalidad correcta del API en diferentes escenarios.
-8. Elaborar un informe detallado que presente la solución diseñada, destacando las decisiones de diseño, las tecnologías utilizadas, los problemas encontrados y las soluciones implementadas.
-9. Grabar un vídeo de máximo 10 minutos de duración donde se explique el desarrollo del proyecto, incluyendo el código implementado, la documentación, las pruebas realizadas, la integración continua, la calidad del código y el proceso de despliegue del API. Todos los miembros del grupo deben participar en la elaboración de este vídeo.
-10. Entregar el código fuente, la documentación, el informe y el vídeo en el repositorio asignado en GitHub Classroom y en el aula virtual de la asignatura, de acuerdo con las indicaciones del profesorado.
+3. Aplicar buenas prácticas de diseño de APIs RESTful, incluyendo el uso de rutas, verbos HTTP adecuados y manejo de errores.
+4. Desarrollar de manera defensiva, anticipando y manejando posibles errores y situaciones excepcionales que puedan surgir durante el uso del API.
+5. Documentar exhaustivamente el código desarrollado, incluyendo comentarios claros y concisos en el código fuente y generando una documentación externa que explique el funcionamiento del API y cómo utilizarlo.
+6. Realizar pruebas unitarias y de integración para garantizar la funcionalidad correcta del API en diferentes escenarios.
 
 ---
 
