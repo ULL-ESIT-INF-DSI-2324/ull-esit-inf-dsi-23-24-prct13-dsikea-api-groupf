@@ -1,15 +1,15 @@
 import { Document, model, Schema } from "mongoose";
 import validator from 'validator';
 
-export interface CustomerInterface extends Document {
+export interface ProviderInterface extends Document {
   name: string;
-  nif: string;
+  cif: string;
   address: string;
   email?: string;
   phone: string;
 }
 
-const customerSchema = new Schema<CustomerInterface>({
+const providerSchema = new Schema<ProviderInterface>({
   name: {
     type: String,
     required: true,
@@ -22,20 +22,19 @@ const customerSchema = new Schema<CustomerInterface>({
       }
     },
   },
-  nif: {
+  cif: {
     type: String,
     unique: true,
     required: true,
     trim: true,
     validate: (value: string) => {
       if (!validator.isLength(value, { min: 9, max: 9 })) {
-        throw new Error('NIF must have 9 characters');
+        throw new Error('CIF must have 9 characters');
       } else if (!validator.isAlphanumeric(value)) {
-        throw new Error('NIF must contain only letters and numbers');
-      } else if (!value.match(/[0-9]+[A-Z]$/)) {
-        throw new Error('NIF must end with a capital letter and the rest must be numbers');
+        throw new Error('CIF must contain only letters and numbers');
+      } else if (!value.match(/^[A-Z][0-9]+/)) {
+        throw new Error('CIF must start with a capital letter and the rest must be numbers');
       }
-      /// isTaxID(value, 'ES') // https://www.npmjs.com/package/tax-id
     }
   },
   address: {
@@ -66,4 +65,4 @@ const customerSchema = new Schema<CustomerInterface>({
   }
 });
 
-export const Customer = model<CustomerInterface>('Customer', customerSchema);
+export const Provider = model<ProviderInterface>('Provider', providerSchema);
