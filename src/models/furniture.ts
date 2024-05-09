@@ -1,5 +1,4 @@
 import { Document, model, Schema } from "mongoose";
-import validator from 'validator';
 
 export interface FurnitureInterface extends Document {
   type: string;
@@ -26,8 +25,6 @@ const furnitureSchema = new Schema<FurnitureInterface>({
     validate: (value: string) => {
       if (!value.match(/^[A-Z]/)) {
         throw new Error('Name must start with a capital letter');
-      } else if (!validator.isAlpha(value, 'es-ES')) {
-        throw new Error('Name must contain only letters');
       }
     },
   },
