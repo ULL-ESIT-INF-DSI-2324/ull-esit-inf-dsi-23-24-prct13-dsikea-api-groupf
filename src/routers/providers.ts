@@ -94,12 +94,12 @@ providerRouter.patch('/providers', async (req, res) => {
  *   summary: Update a provider by ID
  */
 providerRouter.patch('/provider/:id', async (req, res) => {
+  const id = req.params.id;
+
   const updates = Object.keys(req.body);
   const allowedUpdates = ['name', 'email', 'phone', 'address'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
   if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
-
-  const id = req.params.id;
 
   try {
     const provider = await Provider.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });

@@ -20,9 +20,9 @@ transactionRouter.post('/transactions', async (req, res) => {
   let entityModel;
   try {
     if (entity.type === 'Customer') {
-      entityModel = await Customer.findById(entity.id);
+      entityModel = await Customer.find(entity.nif);
     } else if (entity.type === 'Provider') {
-      entityModel = await Provider.findById(entity.id);
+      entityModel = await Provider.find(entity.cif);
     } else {
       return res.status(400).send('Invalid entity type');
     }
@@ -35,18 +35,39 @@ transactionRouter.post('/transactions', async (req, res) => {
 
   // Validate furniture
   let totalAmount = 0;
+  let newFurniture;
   for (const item of furniture) {
-    const furnitureModel = await Furniture.findById(item.furnitureId);
-    if (!furnitureModel) {
+    const furnitureModel = await Furniture.findOne(item.name);
+    if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
+      newFurniture = new Furniture({
+        name: item.name,
+        description: item.description,
+        color: item.color,
+        price: item.price,
+        stock: item.quantity
+      });
+      try {
+        await newFurniture.save();
+      } catch (e) {
+        return res.status(400).send(e);
+      }
+    } else if (!furnitureModel) {
       return res.status(404).send('Furniture not found');
     }
-    if (furnitureModel.stock < item.quantity) {
-      return res.status(400).send('Not enough stock');
+    let furniture_model;
+    furnitureModel ? furniture_model = furnitureModel : furniture_model = newFurniture;
+    if (type === 'Purchase Order' || type === 'Refund from client') {
+      if (furnitureModel) furnitureModel.stock += item.quantity;
     }
-    totalAmount += furnitureModel.price * item.quantity;
-    furnitureModel.stock -= item.quantity;
+    if (type === 'Sale to client' || type === 'Refund to provider') {
+      if (furniture_model.stock < item.quantity) {
+        return res.status(400).send('Not enough stock');
+      }
+      furniture_model.stock -= item.quantity;
+    }
+    totalAmount += furniture_model.price * item.quantity;
     try {
-      await furnitureModel.save();
+      furnitureModel ? await furnitureModel.save() : await newFurniture.save();
     } catch (e) {
       return res
     }

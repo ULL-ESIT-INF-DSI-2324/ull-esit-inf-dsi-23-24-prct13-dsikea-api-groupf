@@ -81,7 +81,7 @@ furnitureRouter.patch('/furnitures', async (req, res) => {
   const filter = { ...filter_name, ...filter_desc, ...filter_color };
 
   const updates = Object.keys(req.body);
-  const allowedUpdates = ['type', 'dimensions', 'price', 'stock'];
+  const allowedUpdates = ['type', 'description', 'color', 'dimensions', 'price', 'stock'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
   if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
   
@@ -105,14 +105,43 @@ furnitureRouter.patch('/furnitures', async (req, res) => {
 furnitureRouter.patch('/furnitures/:id', async (req, res) => {
   const id = req.params.id;
 
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['type', 'description', 'color', 'dimensions', 'price', 'stock'];
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
+
   try {
-    const furniture = await Furniture.findByIdAndUpdate(id, req.body, { new: true });
+    const furniture = await Furniture.findByIdAndUpdate(id, req.body, { new: true, runValidators: true});
     if (!furniture) {
       return res.status(404).send();
     }
     return res.status(201).send(furniture);
   } catch (e) {
     return res.status(400).send(e);
+  }
+});
+
+/**
+ * @swagger
+ * /furnitures:
+ *  delete:
+ *   summary: Delete a furniture by name, description, color or all of them
+ */
+furnitureRouter.delete('/furnitures', async (req, res) => {
+
+  const filter_name = req.query.name? { name: req.query.name.toString() } : {};
+  const filter_desc = req.query.description? { description: req.query.description.toString() } : {};
+  const filter_color = req.query.color? { color: req.query.color.toString() } : {};
+  const filter = { ...filter_name, ...filter_desc, ...filter_color };
+
+  try {
+    const furniture = await Furniture.findOneAndDelete(filter)
+    if (!furniture) {
+      return res.status(404).send();
+    }
+    return res.status(201).send(furniture);
+  } catch (e) {
+    return res.status(500).send();
   }
 });
 
