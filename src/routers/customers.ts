@@ -22,28 +22,15 @@ customerRouter.post('/customers', async (req, res) => {
 
 /**
  * @swagger
- * /customers:
- *  get:
- *   summary: Get all customers
- */
-customerRouter.get('/customers', async (_, res) => {
-  try {
-    const customers = await Customer.find();
-    res.status(201).send(customers);
-  } catch (e) {
-    res.status(500).send();
-  }
-});
-
-/**
- * @swagger
  * /customers/{id}:
  *  get:
- *   summary: Get a customer by NIF
+ *   summary: Get a customer by NIF or all of them
  */
 customerRouter.get('/customers', async (req, res) => {
+  const filter = req.query.nif? { nif: req.query.nif.toString() } : {};
+  
   try {
-    const customer = await Customer.findOne({ nif: req.query.nif });
+    const customer = await Customer.find(filter);
     if (!customer) {
       return res.status(404).send();
     }
