@@ -45,9 +45,11 @@ transactionRouter.post('/transactions', async (req, res) => {
       const furnitureModel = await Furniture.findOne(furnitureFilter);
       if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
         newFurniture = new Furniture({
+          type: item.body.type,
           name: item.name,
           description: item.body.description,
           color: item.body.color,
+          dimensions: item.body.dimensions,
           price: item.body.price,
           stock: item.quantity
         });

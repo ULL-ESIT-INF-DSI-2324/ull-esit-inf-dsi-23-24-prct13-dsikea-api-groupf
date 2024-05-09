@@ -7,7 +7,7 @@ import { CustomerInterface } from "./customer.js";
 interface TransactionInterface extends Document {
   entity: CustomerInterface | ProviderInterface;
   type: 'Purchase Order' | 'Sell Order' | 'Refund from client' | 'Refund to provider'; // Tipo de transacción
-  furniture: { name: FurnitureInterface, body?: {description: FurnitureInterface, color: FurnitureInterface, price: FurnitureInterface}, quantity: number }[]; // Muebles involucrados y cantidad
+  furniture: { name: FurnitureInterface, body?: {type: FurnitureInterface, description: FurnitureInterface, color: FurnitureInterface, dimensions: FurnitureInterface, price: FurnitureInterface}, quantity: number }[]; // Muebles involucrados y cantidad
   dateTime?: Date; // Fecha y hora de la transacción
   observations?: string; // Observaciones
   totalAmount: number; // Importe total de la transacción
@@ -31,12 +31,22 @@ const transactionSchema = new Schema<TransactionInterface>({
       ref: 'Furniture'
     },
     body : {
+      type: {
+        type: String,
+        required: true,
+        ref: 'Furniture'
+      },
       description: {
         type: String,
         required: true,
         ref: 'Furniture'
       },
       color: {
+        type: String,
+        required: true,
+        ref: 'Furniture'
+      },
+      dimensions: {
         type: String,
         required: true,
         ref: 'Furniture'
