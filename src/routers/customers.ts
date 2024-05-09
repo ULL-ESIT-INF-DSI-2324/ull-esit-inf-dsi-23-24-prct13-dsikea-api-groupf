@@ -34,9 +34,9 @@ customerRouter.get('/customers', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.send(customer);
+    return res.status(201).send(customer);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(500).send(e);
   }
 });
 
@@ -54,27 +54,60 @@ customerRouter.get('/customers/:id', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.send(customer);
+    return res.status(201).send(customer);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(500).send(e);
   }
 });
 
 /**
  * @swagger
- * /customers/{id}:
- *  put:
- *   summary: Update a customer by ID
+ * /customers:
+ *  patch:
+ *   summary: Update a customer by NIF
  */
-customerRouter.put('/customers/:id', async (req, res) => {
-  const id = req.params.id;
+customerRouter.patch('/customers', async (req, res) => {
+  if(!req.query.nif) {
+    return res.status(400).send('Cannot update without a nif.');
+  }
+  const filter = { nif: req.query.nif.toString() };
+
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['name', 'email', 'phone', 'address'];
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
 
   try {
-    const customer = await Customer.findByIdAndUpdate(id, req.body, { new: true });
+    const customer = await Customer.findOneAndUpdate(filter, req.body, { new: true, runValidators: true });
     if (!customer) {
       return res.status(404).send();
     }
-    return res.send(customer);
+    return res.status(201).send(customer);
+  } catch (e) {
+    return res.status(400).send(e);
+  }
+});
+
+/**
+ * @swagger
+ * /customers:
+ *  patch:
+ *   summary: Update a customer by ID
+ */
+customerRouter.patch('/customers/:id', async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['name', 'email', 'phone', 'address'];
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
+
+  const id = req.params.id;
+
+  try {
+    const customer = await Customer.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+    if (!customer) {
+      return res.status(404).send();
+    }
+    return res.status(201).send(customer);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -94,48 +127,30 @@ customerRouter.delete('/customers/:id', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.send(customer);
+    return res.status(201).send(customer);
   } catch (e) {
     return res.status(500).send();
   }
 });
 
+
 /**
  * @swagger
- * /customers/nif/{nif}:
+ * /customers:
  *  delete:
- *   summary: Delete a customer by NIF
+ *   summary: Delete a customer by NIF or all of them
  */
-customerRouter.delete('/customers/nif/:nif', async (req, res) => {
-  const nif = req.params.nif;
+customerRouter.delete('/customers', async (req, res) => {
+  const filter = req.query.nif? { nif: req.query.nif.toString() } : {};
 
   try {
-    const customer = await Customer.findOneAndDelete({ nif });
+    const customer = await Customer.findOneAndDelete({ filter });
     if (!customer) {
       return res.status(404).send();
     }
-    return res.send(customer);
+    return res.status(201).send(customer);
   } catch (e) {
     return res.status(500).send();
   }
 });
 
-/**
- * @swagger
- * /customers/nif/{nif}:
- *  put:
- *   summary: Update a customer by NIF
- */
-customerRouter.put('/customers/nif/:nif', async (req, res) => {
-  const nif = req.params.nif;
-
-  try {
-    const customer = await Customer.findOneAndUpdate({ nif }, req.body, { new: true });
-    if (!customer) {
-      return res.status(404).send();
-    }
-    return res.send(customer);
-  } catch (e) {
-    return res.status(400).send(e);
-  }
-});

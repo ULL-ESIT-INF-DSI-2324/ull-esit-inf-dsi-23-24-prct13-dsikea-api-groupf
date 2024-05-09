@@ -40,7 +40,11 @@ transactionRouter.post('/transactions', async (req, res) => {
     if (!furnitureModel) {
       return res.status(404).send('Furniture not found');
     }
+    if (furnitureModel.stock < item.quantity) {
+      return res.status(400).send('Not enough stock');
+    }
     totalAmount += furnitureModel.price * item.quantity;
+    furnitureModel.stock -= item.quantity;
   }
 
   // Create transaction
@@ -65,29 +69,57 @@ transactionRouter.post('/transactions', async (req, res) => {
  * @swagger
  * /transactions:
  *  get:
- *   summary: Get transactions
+ *   summary: Get all transactions or by iden_number or CIF
  */
 transactionRouter.get('/transactions', async (req, res) => {
-  const { nif, startDate, endDate, type } = req.query;
-	const filter: any = {};
+  const { iden_number } = req.query;
+  let filter = {};
 
-	if (nif) {
-		const customer = await Customer.findOne({ nif });
-		const provider = await Provider.findOne({ cif: nif });
-		if (!customer && !provider) {
-			return res.status(404).send('Entity not found');
-		}
-		filter.entity = customer ? customer._id : provider?. _id;
-	}
+  if (iden_number) {
+    const customer = await Customer.findOne({ nif: iden_number });
+    const provider = await Provider.findOne({ cif: iden_number });
+    if (!customer && !provider) {
+      return res.status(404).send('Entity not found');
+    }
+    filter = { entity: customer ? customer._id : (provider ? provider._id : null) };
+  }
 
-	if (startDate && endDate) {
-		const startDateString = startDate.toString();
-		const endDateString = endDate.toString();
-		filter.dateTime = { $gte: new Date(startDateString), $lte: new Date(endDateString) };
-	}
+  try {
+    const transactions = await Transaction.find(filter);
+    return res.send(transactions);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+/**
+ * @swagger
+ * /transactions:
+ *  get:
+ *   summary: Get transactions by date range and type
+ */
+transactionRouter.get('/transactions', async (req, res) => {
+  const { startDate, endDate, type } = req.query;
+  let filter = {};
+
+  /*if (iden_number) {
+    const customer = await Customer.findOne({ iden_number });
+    const provider = await Provider.findOne({ cif: iden_number });
+    if (!customer && !provider) {
+      return res.status(404).send('Entity not found');
+    }
+    filter = { entity: customer ? customer._id : (provider ? provider._id : null) };
+  }*/
+
+  if (startDate && endDate) {
+    const startDateString = startDate.toString();
+    const endDateString = endDate.toString();
+    const time = { $gte: new Date(startDateString), $lte: new Date(endDateString) };
+    filter = { dateTime: time };
+  }
 
 	if (type) {
-	  filter.type = type;
+	  filter = {type: type};
 	}
 
   try {
@@ -177,15 +209,15 @@ transactionRouter.delete('/transactions/:id', async (req, res) => {
 
 /**
  * @swagger
- * /transactions/customer/{nif}:
+ * /transactions/customer/{iden_number}:
  *  get:
- *   summary: Get transactions by customer NIF
+ *   summary: Get transactions by customer iden_number
  */
-transactionRouter.get('/transactions/customer/:nif', async (req, res) => {
-  const nif = req.params.nif;
+transactionRouter.get('/transactions/customer/:iden_number', async (req, res) => {
+  const iden_number = req.params.iden_number;
   
   try {
-    const customer = await Customer.findOne({ nif });
+    const customer = await Customer.findOne({ iden_number });
     if (!customer) {
       return res.status(404).send('Customer not found');
     }
