@@ -22,7 +22,7 @@ customerRouter.post('/customers', async (req, res) => {
 
 /**
  * @swagger
- * /customers/{id}:
+ * /customers:
  *  get:
  *   summary: Get a customer by NIF or all of them
  */
