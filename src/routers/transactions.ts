@@ -67,11 +67,11 @@ transactionRouter.post('/transactions', async (req, res) => {
         furnitureModel.stock -= item.quantity;
       }
       totalAmount += furnitureModel.price * item.quantity;
-    }
-    try {
-      furnitureModel ? await furnitureModel.save() : await newFurniture.save();
-    } catch (e) {
-      return res.status(400).send(e);
+      try {
+        await furnitureModel.save();
+      } catch (e) {
+        return res.status(400).send(e);
+      }
     }
   }
 
