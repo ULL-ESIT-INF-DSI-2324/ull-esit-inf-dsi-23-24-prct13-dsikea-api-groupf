@@ -40,7 +40,7 @@ transactionRouter.post('/transactions', async (req, res) => {
   let totalAmount = 0;
   let newFurniture;
   for (const item of furniture) {
-    const furnitureFilter = { name: item.name.toString() };
+    const furnitureFilter = { name: item.name };
     const furnitureModel = await Furniture.findOne(furnitureFilter);
     if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
       newFurniture = new Furniture({
@@ -53,7 +53,7 @@ transactionRouter.post('/transactions', async (req, res) => {
       try {
         await newFurniture.save();
       } catch (e) {
-        return res.status(400).send('Soy yo');
+        return res.status(400).send(e);
       }
     } else if (!furnitureModel) {
       return res.status(404).send('Furniture not found');
@@ -70,7 +70,7 @@ transactionRouter.post('/transactions', async (req, res) => {
       try {
         await furnitureModel.save();
       } catch (e) {
-        return res.status(400).send(e);
+        return res.status(400).send('soy yo');
       }
     }
   }
