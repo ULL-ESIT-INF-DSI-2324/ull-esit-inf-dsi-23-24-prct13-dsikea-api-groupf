@@ -99,7 +99,7 @@ transactionRouter.post('/transactions', async (req, res) => {
  * @swagger
  * /transactions:
  *  get:
- *   summary: Get all transactions or by iden_number or CIF
+ *   summary: Get all transactions or by NIF or CIF
  */
 transactionRouter.get('/transactions', async (req, res) => {
   const { iden_number } = req.query;

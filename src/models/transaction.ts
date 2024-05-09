@@ -7,7 +7,7 @@ import { CustomerInterface } from "./customer.js";
 interface TransactionInterface extends Document {
   entity: CustomerInterface | ProviderInterface;
   type: 'Purchase Order' | 'Sell Order' | 'Refund from client' | 'Refund to provider'; // Tipo de transacción
-  furniture: { furnitureId: FurnitureInterface, quantity: number }[]; // Muebles involucrados y cantidad
+  furniture: { name: FurnitureInterface, quantity: number }[]; // Muebles involucrados y cantidad
   dateTime?: Date; // Fecha y hora de la transacción
   observations?: string; // Observaciones
   totalAmount: number; // Importe total de la transacción
@@ -25,8 +25,8 @@ const transactionSchema = new Schema<TransactionInterface>({
     enum: ['Purchase Order', 'Sell Order', 'Refund from client', 'Refund to provider']
   },
   furniture: [{
-    furnitureId: {
-      type: Schema.Types.ObjectId,
+    name: {
+      type: String,
       required: true,
       ref: 'Furniture'
     },
