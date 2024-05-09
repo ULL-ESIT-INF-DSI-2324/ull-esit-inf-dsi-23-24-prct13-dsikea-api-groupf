@@ -41,7 +41,7 @@ customerRouter.get('/customers', async (_, res) => {
  *  get:
  *   summary: Get a customer by NIF
  */
-customerRouter.get('/customers/:id', async (req, res) => {
+/*customerRouter.get('/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findById(req.query.nif?.toString());
     if (!customer) {
@@ -51,4 +51,4 @@ customerRouter.get('/customers/:id', async (req, res) => {
   } catch (e) {
     res.status(500).send();
   }
-});
+});*/
