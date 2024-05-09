@@ -86,12 +86,10 @@ furnitureRouter.patch('/furnitures', async (req, res) => {
   if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
   
   try {
-    const furniture = await Furniture.find(filter);
+    const furniture = await Furniture.findOneAndUpdate(filter, req.body, { new: true, runValidators: true });
     if (!furniture) {
       return res.status(404).send();
     }
-    updates.forEach((update) => furniture[update] = req.body[update]);
-    furniture.forEach((f) => f.save());
     return res.status(201).send(furniture);
   } catch (e) {
     return res.status(400).send(e);
