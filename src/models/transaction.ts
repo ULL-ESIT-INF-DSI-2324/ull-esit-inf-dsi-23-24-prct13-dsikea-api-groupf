@@ -33,27 +33,27 @@ const transactionSchema = new Schema<TransactionInterface>({
     body : {
       type: {
         type: String,
-        required: true,
+        required: false,
         ref: 'Furniture'
       },
       description: {
         type: String,
-        required: true,
+        required: false,
         ref: 'Furniture'
       },
       color: {
         type: String,
-        required: true,
+        required: false,
         ref: 'Furniture'
       },
       dimensions: {
         type: String,
-        required: true,
+        required: false,
         ref: 'Furniture'
       },
       price: {
         type: Number,
-        required: true,
+        required: false,
         ref: 'Furniture'
       }
     },
