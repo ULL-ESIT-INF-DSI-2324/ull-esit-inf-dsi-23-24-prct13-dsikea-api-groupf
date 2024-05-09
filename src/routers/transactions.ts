@@ -46,7 +46,7 @@ transactionRouter.post('/transactions', async (req, res) => {
       if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
         newFurniture = new Furniture({
           name: item.name,
-          description: item.dody.description,
+          description: item.body.description,
           color: item.body.color,
           price: item.body.price,
           stock: item.quantity
