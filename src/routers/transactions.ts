@@ -57,23 +57,21 @@ transactionRouter.post('/transactions', async (req, res) => {
       }
     } else if (!furnitureModel) {
       return res.status(404).send('Furniture not found');
-    }
-    let furniture_model;
-    furnitureModel ? furniture_model = furnitureModel : furniture_model = newFurniture;
-    if (type === 'Purchase Order' || type === 'Refund from client') {
-      if (furnitureModel) furnitureModel.stock += item.quantity;
-    }
-    if (type === 'Sale to client' || type === 'Refund to provider') {
-      if (furniture_model.stock < item.quantity) {
-        return res.status(400).send('Not enough stock');
+    } else {
+      if (type === 'Purchase Order' || type === 'Refund from client') {
+        furnitureModel.stock += item.quantity;
+      } else {
+        if (furnitureModel.stock < item.quantity) {
+          return res.status(400).send('Not enough stock');
+        }
+        furnitureModel.stock -= item.quantity;
       }
-      furniture_model.stock -= item.quantity;
+      totalAmount += furnitureModel.price * item.quantity;
     }
-    totalAmount += furniture_model.price * item.quantity;
     try {
       furnitureModel ? await furnitureModel.save() : await newFurniture.save();
     } catch (e) {
-      return res
+      return res.status(400).send(e);
     }
   }
 
