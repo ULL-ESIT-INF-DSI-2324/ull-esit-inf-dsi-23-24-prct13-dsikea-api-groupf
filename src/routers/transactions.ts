@@ -59,16 +59,16 @@ transactionRouter.post('/transactions', async (req, res) => {
       return res.status(404).send('Furniture not found');
     } else {
       if (type === 'Purchase Order' || type === 'Refund from client') {
-        furnitureModel.stock += item.quantity;
+        furnitureModel!.stock += item.quantity;
       } else {
         if (furnitureModel.stock < item.quantity) {
           return res.status(400).send('Not enough stock');
         }
-        furnitureModel.stock -= item.quantity;
+        furnitureModel!.stock -= item.quantity;
       }
       totalAmount += furnitureModel.price * item.quantity;
       try {
-        await furnitureModel.save();
+        await furnitureModel!.save();
       } catch (e) {
         return res.status(400).send(e);
       }
