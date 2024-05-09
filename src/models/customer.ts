@@ -17,8 +17,6 @@ const customerSchema = new Schema<CustomerInterface>({
     validate: (value: string) => {
       if (!value.match(/^[A-Z]/)) {
         throw new Error('Name must start with a capital letter');
-      } else if (!validator.isAlpha(value)) {
-        throw new Error('Name must contain only letters');
       }
     },
   },
