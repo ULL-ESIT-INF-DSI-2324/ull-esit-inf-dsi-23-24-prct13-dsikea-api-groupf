@@ -40,7 +40,7 @@ transactionRouter.post('/transactions', async (req, res) => {
   let totalAmount = 0;
   let newFurniture;
   for (const item of furniture) {
-    filter = {name: item.name};
+    const filter = { name: item.name };
     const furnitureModel = await Furniture.findOne(filter);
     if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
       newFurniture = new Furniture({
