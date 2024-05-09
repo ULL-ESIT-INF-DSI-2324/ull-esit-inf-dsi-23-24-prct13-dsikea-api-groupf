@@ -142,11 +142,11 @@ providerRouter.delete('/providers', async (req, res) => {
   const filter = req.query.cif? { cif: req.query.cif.toString() } : {};
 
   try {
-    const provider = await Provider.findOneAndDelete({ filter });
+    const provider = await Provider.findOneAndDelete(filter);
     if (!provider) {
-      return res.status(404).send();
+      return res.status(404).send({error: "Provider not found"});
     }
-    return res.status(201).send(provider);
+    return res.status(200).send(provider);
   } catch (e) {
     return res.status(500).send();
   }

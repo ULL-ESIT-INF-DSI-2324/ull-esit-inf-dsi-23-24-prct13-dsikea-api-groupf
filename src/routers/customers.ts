@@ -144,11 +144,11 @@ customerRouter.delete('/customers', async (req, res) => {
   const filter = req.query.nif? { nif: req.query.nif.toString() } : {};
 
   try {
-    const customer = await Customer.findOneAndDelete({ filter });
+    const customer = await Customer.findOneAndDelete(filter);
     if (!customer) {
-      return res.status(404).send();
+      return res.status(404).send({error: "Customer not found"});
     }
-    return res.status(201).send(customer);
+    return res.status(200).send(customer);
   } catch (e) {
     return res.status(500).send();
   }
