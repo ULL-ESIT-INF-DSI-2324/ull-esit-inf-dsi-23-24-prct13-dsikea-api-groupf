@@ -31,7 +31,6 @@ const transactionSchema = new Schema<TransactionInterface>({
       ref: 'Furniture'
     },
     body : {
-      required: false,
       description: {
         type: String,
         required: true,
