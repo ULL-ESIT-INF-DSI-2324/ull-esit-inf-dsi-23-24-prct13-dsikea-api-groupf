@@ -104,6 +104,7 @@ transactionRouter.post('/transactions', async (req, res) => {
  *  get:
  *   summary: Get all transactions or by NIF or CIF
  */
+/*
 transactionRouter.get('/transactions', async (req, res) => {
   const filter = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
 
@@ -114,6 +115,7 @@ transactionRouter.get('/transactions', async (req, res) => {
     return res.status(500).send(e);
   }
 });
+*/
 
 /**
  * @swagger
@@ -122,7 +124,11 @@ transactionRouter.get('/transactions', async (req, res) => {
  *   summary: Get transactions by date range and type
  */
 transactionRouter.get('/transactions', async (req, res) => {
-  const { startDate, endDate, type } = req.query;
+  //const { startDate, endDate, type } = req.query;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  const type = req.query.type;
+
   let filter_time = {};
   let filter_type = {};
 
@@ -142,8 +148,11 @@ transactionRouter.get('/transactions', async (req, res) => {
 	  filter_type = { type: type };
 	}
 
-  console.log('Final filters:', { ...filter_time, ...filter_type });
-  const filter = { ...filter_time, ...filter_type };
+  const filter_iden = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
+
+
+  console.log('Final filters:', { ...filter_time, ...filter_type, ...filter_iden });
+  const filter = { ...filter_time, ...filter_type, ...filter_iden };
 
   try {
     const transactions = await Transaction.find(filter);
