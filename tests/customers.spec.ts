@@ -3,7 +3,6 @@ import { Customer } from '../src/models/customer.js';
 import { app } from '../src/index.js';
 import 'mocha';
 import { expect } from 'chai';
-import { doesNotMatch } from 'assert';
 
 const customer1 = {
 	name: 'Prueba 1',

@@ -91,11 +91,10 @@ transactionRouter.post('/transactions', async (req, res) => {
 
   try {
     await transaction.save();
-    res.status(201).send(transaction);
+    return res.status(201).send(transaction);
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
-	return res.status(200).send('Success');
 });
 
 
@@ -130,8 +129,8 @@ transactionRouter.get('/transactions', async (req, res) => {
 	  filter_type = { type: type };
 	}
 
-  const filter_iden = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
-
+  const filter_iden = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : 
+                                      (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
 
   console.log('Final filters:', { ...filter_time, ...filter_type, ...filter_iden });
   const filter = { ...filter_time, ...filter_type, ...filter_iden };
@@ -170,22 +169,30 @@ transactionRouter.get('/transactions/:id', async (req, res) => {
  *  put:
  *   summary: Update a transaction by ID
  */
-transactionRouter.put('/transactions/:id', async (req, res) => {
+transactionRouter.patch('/transactions/:id', async (req, res) => {
   const id = req.params.id;
   const { entity, type, furniture, observations } = req.body;
 
   // Validate entity
   let entityModel;
+  let filter = {};
   try {
     if (entity.type === 'Customer') {
-      entityModel = await Customer.findById(entity.id);
+      filter = { nif: entity.nif.toString() };
+      entityModel = await Customer.findOne(filter);
     } else if (entity.type === 'Provider') {
-      entityModel = await Provider.findById(entity.id);
+      filter = { cif: entity.cif.toString() };
+      entityModel = await Provider.findOne(filter);
     } else {
       return res.status(400).send('Invalid entity type');
     }
     if (!entityModel) {
       return res.status(404).send('Entity not found');
+    }
+    if (entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
+      return res.status(400).send('Invalid transaction type for Customers');
+    } else if (entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
+      return res.status(400).send('Invalid transaction type for Providers');
     }
   } catch (e) {
     return res.status(500).send(e);
@@ -193,31 +200,59 @@ transactionRouter.put('/transactions/:id', async (req, res) => {
 
   // Validate furniture
   let totalAmount = 0;
+  let newFurniture;
   for (const item of furniture) {
-    const furnitureModel = await Furniture.findById(item.furnitureId);
-    if (!furnitureModel) {
-      return res.status(404).send('Furniture not found');
+    const furnitureFilter = { name: item.name };
+    try {
+      const furnitureModel = await Furniture.findOne(furnitureFilter);
+      ///if (type === 'Refund from client' || type === 'Refund to provider') isValidRefund(type, furnitureModel, item.quantity, entityModel);
+      if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
+        newFurniture = new Furniture({
+          type: item.body.type,
+          name: item.name,
+          description: item.body.description,
+          color: item.body.color,
+          dimensions: item.body.dimensions,
+          price: item.body.price,
+          stock: item.quantity
+        });
+        totalAmount += newFurniture.price * item.quantity;
+        await newFurniture.save();
+      } else if (!furnitureModel) {
+        return res.status(404).send('Furniture not found');
+      } else {
+        if (type === 'Purchase Order' || type === 'Refund from client') {
+          furnitureModel.stock += item.quantity;
+        } else {
+          if (furnitureModel.stock < item.quantity) {
+            return res.status(400).send('Not enough stock');
+          }
+          furnitureModel.stock -= item.quantity;
+        }
+        totalAmount += furnitureModel.price * item.quantity;
+        await furnitureModel.save();
+      }
+    } catch (e) {
+      return res.status(500).send(e);
     }
-    totalAmount += furnitureModel.price * item.quantity;
   }
 
   // Update transaction
   try {
     const transaction = await Transaction.findByIdAndUpdate(id, {
-      entity: entityModel,
+      entity,
       type,
       furniture,
       observations,
       totalAmount
-    }, { new: true });
+    }, { new: true, runValidators: true });
     if (!transaction) {
       return res.status(404).send('Transaction not found');
     }
-    res.status(200).send(transaction);
+    return res.status(200).send(transaction);
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
-	return res.status(200).send('Success');
 });
 
 /**
@@ -234,52 +269,7 @@ transactionRouter.delete('/transactions/:id', async (req, res) => {
     if (!transaction) {
       return res.status(404).send('Transaction not found');
     }
-    res.status(200).send(transaction);
-  } catch (e) {
-    res.status(500).send(e);
-  }
-	return res.status(200).send('Success');
-});
-
-/**
- * @swagger
- * /transactions/customer/{iden_number}:
- *  get:
- *   summary: Get transactions by customer iden_number
- */
-transactionRouter.get('/transactions/customer/:iden_number', async (req, res) => {
-  const iden_number = req.params.iden_number;
-  
-  try {
-    const customer = await Customer.findOne({ iden_number });
-    if (!customer) {
-      return res.status(404).send('Customer not found');
-    }
-
-    const transactions = await Transaction.find({ entity: customer._id });
-    return res.status(200).send(transactions);
-  } catch (e) {
-    return res.status(500).send(e);
-  }
-});
-
-/**
- * @swagger
- * /transactions/provider/{cif}:
- *  get:
- *   summary: Get transactions by provider CIF
- */
-transactionRouter.get('/transactions/provider/:cif', async (req, res) => {
-  const cif = req.params.cif;
-  
-  try {
-    const provider = await Provider.findOne({ cif });
-    if (!provider) {
-      return res.status(404).send('Provider not found');
-    }
-
-    const transactions = await Transaction.find({ entity: provider._id });
-    return res.status(200).send(transactions);
+    return res.status(200).send(transaction);
   } catch (e) {
     return res.status(500).send(e);
   }
