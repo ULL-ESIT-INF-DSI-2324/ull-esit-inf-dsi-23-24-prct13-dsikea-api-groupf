@@ -123,27 +123,24 @@ transactionRouter.get('/transactions', async (req, res) => {
  */
 transactionRouter.get('/transactions', async (req, res) => {
   const { startDate, endDate, type } = req.query;
-  let filter = {};
-
-  /*if (iden_number) {
-    const customer = await Customer.findOne({ iden_number });
-    const provider = await Provider.findOne({ cif: iden_number });
-    if (!customer && !provider) {
-      return res.status(404).send('Entity not found');
-    }
-    filter = { entity: customer ? customer._id : (provider ? provider._id : null) };
-  }*/
+  let filter_time = {};
+  let filter_type = {};
 
   if (startDate && endDate) {
     const startDateString = startDate.toString();
     const endDateString = endDate.toString();
-    const time = { $gte: new Date(startDateString), $lte: new Date(endDateString) };
-    filter = { dateTime: time };
+    const time = { 
+      $gte: new Date(startDateString), 
+      $lte: new Date(endDateString)
+    };
+    filter_time = { dateTime: time };
   }
 
 	if (type) {
-	  filter = {type: type};
+	  filter_type = {type: type};
 	}
+
+  const filter = { ...filter_time, ...filter_type };
 
   try {
     const transactions = await Transaction.find(filter);
