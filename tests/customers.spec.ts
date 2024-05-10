@@ -380,4 +380,73 @@ describe('Customers', () => {
 			.send({ email: 'prueba2@gmail.com' })
 			.expect(400);
 	});
+
+	it('Should get an error by trying to update a customer with an already existing phone', async () => {
+		const newCustomer = await new Customer(customer1).save();
+		await new Customer(customer2).save();
+		await request(app)
+			.patch(`/customers/${newCustomer.id}`)
+			.send({ phone: '987654321' })
+			.expect(400);
+	});
+
+	// DELETE /customers
+	it('Should delete the first customer according to the filter (nif)', async () => {
+		await new Customer(customer1).save();
+		await new Customer(customer2).save();
+
+		await request(app)
+			.delete('/customers')
+			.expect(200);
+
+		const customers = await Customer.find();
+		expect(customers).to.be.lengthOf(1);
+	});
+
+	it('Should delete a customer by nif', async () => {
+		await new Customer(customer1).save();
+
+		await request(app)
+			.delete(`/customers?nif=12345678Z`)
+			.expect(200);
+
+		const customer = await Customer.findOne({ nif: '12345678Z' });
+		expect(customer).to.be.null;
+	});
+
+	it('Should get an error trying to delete a customer by nif when not found', async () => {
+		await new Customer(customer1).save();
+
+		await request(app)
+			.delete('/customers?nif=87654321A')
+			.expect(404);
+	});
+
+	// DELETE /customers/:id
+	it('Should delete a customer by id', async () => {
+		const newCustomer = await new Customer(customer1).save();
+
+		await request(app)
+			.delete(`/customers/${newCustomer.id}`)
+			.expect(200);
+
+		const customer = await Customer.findById(newCustomer.id);
+		expect(customer).to.be.null;
+	});
+
+	it('Should get an error trying to delete a customer by id when not found', async () => {
+		const newCustomer = await new Customer(customer1).save();
+
+		await request(app)
+			.delete('/customers/000000000000000000000000')
+			.expect(404);
+	});
+
+	it('Should get an error trying to delete a customer by id with an invalid value', async () => {
+		const newCustomer = await new Customer(customer1).save();
+
+		await request(app)
+			.delete(`/customers/12345678`)
+			.expect(400);
+	});
 });
