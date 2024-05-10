@@ -114,7 +114,11 @@ transactionRouter.get('/transactions', async (req, res) => {
     if (!customer && !provider) {
       return res.status(404).send('Entity not found');
     }
-    filter = { entity: customer ? customer._id : (provider ? provider._id : null) };
+    if (customer) {
+      filter = { entity: {type: 'Customer', nif: iden_number.toString()} };
+    } else if (provider) {
+      filter = { entity: {type: 'Provider', cif: iden_number.toString()} };
+    }
   }
 
   try {
