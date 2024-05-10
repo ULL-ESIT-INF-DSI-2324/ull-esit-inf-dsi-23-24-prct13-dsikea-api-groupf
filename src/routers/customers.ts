@@ -31,12 +31,12 @@ customerRouter.get('/customers', async (req, res) => {
   
   try {
     const customer = await Customer.find(filter);
-    if (!customer) {
-      return res.status(404).send();
+    if (customer.length === 0) {
+      return res.status(404).send('Customer not found!');
     }
     return res.status(200).send(customer);
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 });
 
@@ -52,11 +52,11 @@ customerRouter.get('/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findById(id);
     if (!customer) {
-      return res.status(404).send();
+      return res.status(404).send('Customer not found!');
     }
     return res.status(200).send(customer);
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 });
 
@@ -80,7 +80,7 @@ customerRouter.patch('/customers', async (req, res) => {
   try {
     const customer = await Customer.findOneAndUpdate(filter, req.body, { new: true, runValidators: true });
     if (!customer) {
-      return res.status(404).send();
+      return res.status(404).send('Customer not found!');
     }
     return res.status(200).send(customer);
   } catch (e) {
@@ -105,7 +105,7 @@ customerRouter.patch('/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
     if (!customer) {
-      return res.status(404).send();
+      return res.status(404).send('Customer not found!');
     }
     return res.status(200).send(customer);
   } catch (e) {
@@ -125,11 +125,11 @@ customerRouter.delete('/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findByIdAndDelete(id);
     if (!customer) {
-      return res.status(404).send();
+      return res.status(404).send('Customer not found!');
     }
     return res.status(200).send(customer);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -146,11 +146,11 @@ customerRouter.delete('/customers', async (req, res) => {
   try {
     const customer = await Customer.findOneAndDelete(filter);
     if (!customer) {
-      return res.status(404).send({error: "Customer not found"});
+      return res.status(404).send("Customer not found!");
     }
     return res.status(200).send(customer);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 

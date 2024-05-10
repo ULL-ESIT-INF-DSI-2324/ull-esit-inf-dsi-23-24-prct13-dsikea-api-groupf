@@ -31,12 +31,12 @@ providerRouter.get('/providers', async (req, res) => {
 
   try {
     const provider = await Provider.find(filter);
-    if (!provider) {
-      return res.status(404).send();
+    if (provider.length === 0) {
+      return res.status(404).send('Provider not found!');
     }
     return res.status(200).send(provider);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -52,11 +52,11 @@ providerRouter.get('/providers/:id', async (req, res) => {
   try {
     const provider = await Provider.findById(id);
     if (!provider) {
-      return res.status(404).send();
+      return res.status(404).send('Provider not found!');
     }
     return res.status(200).send(provider);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -79,7 +79,7 @@ providerRouter.patch('/providers', async (req, res) => {
   try {
     const provider = await Provider.findOneAndUpdate(filter, req.body, { new: true, runValidators: true });
     if (!provider) {
-      return res.status(404).send();
+      return res.status(404).send('Provider not found!');
     }
     return res.status(200).send(provider);
   } catch (e) {
@@ -104,7 +104,7 @@ providerRouter.patch('/provider/:id', async (req, res) => {
   try {
     const provider = await Provider.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
     if (!provider) {
-      return res.status(404).send();
+      return res.status(404).send('Provider not found!');
     }
     return res.status(200).send(provider);
   } catch (e) {
@@ -124,11 +124,11 @@ providerRouter.delete('/providers/:id', async (req, res) => {
   try {
     const provider = await Provider.findByIdAndDelete(id);
     if (!provider) {
-      return res.status(404).send();
+      return res.status(404).send('Provider not found!');
     }
     return res.status(200).send(provider);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -144,10 +144,10 @@ providerRouter.delete('/providers', async (req, res) => {
   try {
     const provider = await Provider.findOneAndDelete(filter);
     if (!provider) {
-      return res.status(404).send({error: "Provider not found"});
+      return res.status(404).send('Provider not found!');
     }
     return res.status(200).send(provider);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });

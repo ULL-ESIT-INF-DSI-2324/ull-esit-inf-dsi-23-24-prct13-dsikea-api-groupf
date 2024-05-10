@@ -38,7 +38,7 @@ transactionRouter.post('/transactions', async (req, res) => {
       return res.status(400).send('Invalid transaction type for Providers');
     }
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 
   // Validate furniture
@@ -76,7 +76,7 @@ transactionRouter.post('/transactions', async (req, res) => {
         await furnitureModel.save();
       }
     } catch (e) {
-      return res.status(500).send(e);
+      return res.status(400).send(e);
     }
   }
 
@@ -139,7 +139,7 @@ transactionRouter.get('/transactions', async (req, res) => {
     const transactions = await Transaction.find(filter);
     return res.status(200).send(transactions);
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 });
 
@@ -159,7 +159,7 @@ transactionRouter.get('/transactions/:id', async (req, res) => {
     }
     return res.status(200).send(transaction);
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 });
 
@@ -195,7 +195,7 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
       return res.status(400).send('Invalid transaction type for Providers');
     }
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 
   // Validate furniture
@@ -233,7 +233,7 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
         await furnitureModel.save();
       }
     } catch (e) {
-      return res.status(500).send(e);
+      return res.status(400).send(e);
     }
   }
 
@@ -271,6 +271,6 @@ transactionRouter.delete('/transactions/:id', async (req, res) => {
     }
     return res.status(200).send(transaction);
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(400).send(e);
   }
 });

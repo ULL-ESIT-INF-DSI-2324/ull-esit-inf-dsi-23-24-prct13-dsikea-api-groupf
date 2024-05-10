@@ -35,12 +35,12 @@ furnitureRouter.get('/furnitures', async (req, res) => {
 
   try {
     const furniture = await Furniture.find(filter);
-    if (!furniture) {
-      return res.status(404).send();
+    if (furniture.length === 0) {
+      return res.status(404).send('Furniture not found!');
     }
     return res.status(200).send(furniture);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -56,11 +56,11 @@ furnitureRouter.get('/furnitures/:id', async (req, res) => {
   try {
     const furniture = await Furniture.findById(id);
     if (!furniture) {
-      return res.status(404).send();
+      return res.status(404).send('Furniture not found!');
     }
     return res.status(200).send(furniture);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -88,7 +88,7 @@ furnitureRouter.patch('/furnitures', async (req, res) => {
   try {
     const furniture = await Furniture.findOneAndUpdate(filter, req.body, { new: true, runValidators: true });
     if (!furniture) {
-      return res.status(404).send();
+      return res.status(404).send('Furniture not found!');
     }
     return res.status(200).send(furniture);
   } catch (e) {
@@ -113,7 +113,7 @@ furnitureRouter.patch('/furnitures/:id', async (req, res) => {
   try {
     const furniture = await Furniture.findByIdAndUpdate(id, req.body, { new: true, runValidators: true});
     if (!furniture) {
-      return res.status(404).send();
+      return res.status(404).send('Furniture not found!');
     }
     return res.status(200).send(furniture);
   } catch (e) {
@@ -137,11 +137,11 @@ furnitureRouter.delete('/furnitures', async (req, res) => {
   try {
     const furniture = await Furniture.findOneAndDelete(filter)
     if (!furniture) {
-      return res.status(404).send();
+      return res.status(404).send('Furniture not found!');
     }
     return res.status(200).send(furniture);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
@@ -157,11 +157,11 @@ furnitureRouter.delete('/furnitures/:id', async (req, res) => {
   try {
     const furniture = await Furniture.findByIdAndDelete(id);
     if (!furniture) {
-      return res.status(404).send();
+      return res.status(404).send('Furniture not found!');
     }
     return res.status(200).send(furniture);
   } catch (e) {
-    return res.status(500).send();
+    return res.status(400).send(e);
   }
 });
 
