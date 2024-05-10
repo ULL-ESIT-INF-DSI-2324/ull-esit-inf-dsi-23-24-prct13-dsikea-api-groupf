@@ -34,7 +34,7 @@ providerRouter.get('/providers', async (req, res) => {
     if (!provider) {
       return res.status(404).send();
     }
-    return res.status(201).send(provider);
+    return res.status(200).send(provider);
   } catch (e) {
     return res.status(500).send();
   }
@@ -54,7 +54,7 @@ providerRouter.get('/providers/:id', async (req, res) => {
     if (!provider) {
       return res.status(404).send();
     }
-    return res.send(provider);
+    return res.status(200).send(provider);
   } catch (e) {
     return res.status(500).send();
   }
@@ -81,7 +81,7 @@ providerRouter.patch('/providers', async (req, res) => {
     if (!provider) {
       return res.status(404).send();
     }
-    return res.status(201).send(provider);
+    return res.status(200).send(provider);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -106,7 +106,7 @@ providerRouter.patch('/provider/:id', async (req, res) => {
     if (!provider) {
       return res.status(404).send();
     }
-    return res.status(201).send(provider);
+    return res.status(200).send(provider);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -126,7 +126,7 @@ providerRouter.delete('/providers/:id', async (req, res) => {
     if (!provider) {
       return res.status(404).send();
     }
-    return res.status(201).send(provider);
+    return res.status(200).send(provider);
   } catch (e) {
     return res.status(500).send();
   }

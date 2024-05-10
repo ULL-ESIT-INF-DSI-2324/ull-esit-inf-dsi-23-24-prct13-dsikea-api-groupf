@@ -34,7 +34,7 @@ customerRouter.get('/customers', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.status(201).send(customer);
+    return res.status(200).send(customer);
   } catch (e) {
     return res.status(500).send(e);
   }
@@ -54,7 +54,7 @@ customerRouter.get('/customers/:id', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.status(201).send(customer);
+    return res.status(200).send(customer);
   } catch (e) {
     return res.status(500).send(e);
   }
@@ -82,7 +82,7 @@ customerRouter.patch('/customers', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.status(201).send(customer);
+    return res.status(200).send(customer);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -107,7 +107,7 @@ customerRouter.patch('/customers/:id', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.status(201).send(customer);
+    return res.status(200).send(customer);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -127,7 +127,7 @@ customerRouter.delete('/customers/:id', async (req, res) => {
     if (!customer) {
       return res.status(404).send();
     }
-    return res.status(201).send(customer);
+    return res.status(200).send(customer);
   } catch (e) {
     return res.status(500).send();
   }

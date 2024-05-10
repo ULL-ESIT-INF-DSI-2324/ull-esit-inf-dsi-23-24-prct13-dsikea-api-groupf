@@ -38,7 +38,7 @@ furnitureRouter.get('/furnitures', async (req, res) => {
     if (!furniture) {
       return res.status(404).send();
     }
-    return res.status(201).send(furniture);
+    return res.status(200).send(furniture);
   } catch (e) {
     return res.status(500).send();
   }
@@ -58,7 +58,7 @@ furnitureRouter.get('/furnitures/:id', async (req, res) => {
     if (!furniture) {
       return res.status(404).send();
     }
-    return res.status(201).send(furniture);
+    return res.status(200).send(furniture);
   } catch (e) {
     return res.status(500).send();
   }
@@ -90,7 +90,7 @@ furnitureRouter.patch('/furnitures', async (req, res) => {
     if (!furniture) {
       return res.status(404).send();
     }
-    return res.status(201).send(furniture);
+    return res.status(200).send(furniture);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -115,7 +115,7 @@ furnitureRouter.patch('/furnitures/:id', async (req, res) => {
     if (!furniture) {
       return res.status(404).send();
     }
-    return res.status(201).send(furniture);
+    return res.status(200).send(furniture);
   } catch (e) {
     return res.status(400).send(e);
   }
@@ -139,7 +139,7 @@ furnitureRouter.delete('/furnitures', async (req, res) => {
     if (!furniture) {
       return res.status(404).send();
     }
-    return res.status(201).send(furniture);
+    return res.status(200).send(furniture);
   } catch (e) {
     return res.status(500).send();
   }
@@ -159,7 +159,7 @@ furnitureRouter.delete('/furnitures/:id', async (req, res) => {
     if (!furniture) {
       return res.status(404).send();
     }
-    return res.status(201).send(furniture);
+    return res.status(200).send(furniture);
   } catch (e) {
     return res.status(500).send();
   }

@@ -138,7 +138,7 @@ transactionRouter.get('/transactions', async (req, res) => {
 
   try {
     const transactions = await Transaction.find(filter);
-    return res.send(transactions);
+    return res.status(200).send(transactions);
   } catch (e) {
     return res.status(500).send(e);
   }
@@ -213,7 +213,7 @@ transactionRouter.put('/transactions/:id', async (req, res) => {
     if (!transaction) {
       return res.status(404).send('Transaction not found');
     }
-    res.send(transaction);
+    res.status(200).send(transaction);
   } catch (e) {
     res.status(400).send(e);
   }
@@ -234,7 +234,7 @@ transactionRouter.delete('/transactions/:id', async (req, res) => {
     if (!transaction) {
       return res.status(404).send('Transaction not found');
     }
-    res.send(transaction);
+    res.status(200).send(transaction);
   } catch (e) {
     res.status(500).send(e);
   }
@@ -257,7 +257,7 @@ transactionRouter.get('/transactions/customer/:iden_number', async (req, res) =>
     }
 
     const transactions = await Transaction.find({ entity: customer._id });
-    return res.send(transactions);
+    return res.status(200).send(transactions);
   } catch (e) {
     return res.status(500).send(e);
   }
@@ -279,7 +279,7 @@ transactionRouter.get('/transactions/provider/:cif', async (req, res) => {
     }
 
     const transactions = await Transaction.find({ entity: provider._id });
-    return res.send(transactions);
+    return res.status(200).send(transactions);
   } catch (e) {
     return res.status(500).send(e);
   }

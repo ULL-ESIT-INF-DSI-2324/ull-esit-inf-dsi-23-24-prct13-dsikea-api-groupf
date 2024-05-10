@@ -6,7 +6,7 @@ import { providerRouter } from './routers/providers.js';
 import { furnitureRouter } from './routers/furnitures.js';
 import { transactionRouter } from './routers/transactions.js';
 
-const app = express();
+export const app = express();
 app.use(express.json());
 app.use(customerRouter);
 app.use(providerRouter);
