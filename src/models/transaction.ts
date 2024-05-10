@@ -5,7 +5,7 @@ import { ProviderInterface } from "./provider.js";
 import { CustomerInterface } from "./customer.js";
 
 interface TransactionInterface extends Document {
-  entity: CustomerInterface | ProviderInterface;
+  entity: { type: ProviderInterface | CustomerInterface, nif?: CustomerInterface, cif?: ProviderInterface};
   type: 'Purchase Order' | 'Sell Order' | 'Refund from client' | 'Refund to provider'; // Tipo de transacción
   furniture: { name: FurnitureInterface, body?: {type: FurnitureInterface, description: FurnitureInterface, color: FurnitureInterface, dimensions: FurnitureInterface, price: FurnitureInterface}, quantity: number }[]; // Muebles involucrados y cantidad
   dateTime?: Date; // Fecha y hora de la transacción
@@ -15,9 +15,21 @@ interface TransactionInterface extends Document {
 
 const transactionSchema = new Schema<TransactionInterface>({
   entity: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    refPath: 'CustomerInterface' || 'ProviderInterface'
+    type: {
+      type: String,
+      required: true,
+      refPath: 'ProviderInterface' || 'CustomerInterface'
+    },
+    nif: {
+      type: String,
+      required: false,
+      refPath: 'CustomerInterface'
+    },
+    cif: {
+      type: String,
+      required: false,
+      refPath: 'ProviderInterface'
+    }
   },
   type: {
     type: String,
