@@ -112,18 +112,22 @@ transactionRouter.get('/transactions', async (req, res) => {
     let customer;
     let provider;
     try {
-      if (req.query.nif) customer = await Customer.findOne({ nif: iden_number });
-      else provider = await Provider.findOne({ cif: iden_number });
+      if (req.query.nif) {
+        customer = await Customer.findOne({ nif: iden_number });
+        if (customer) {
+          filter = { 'entity.type': 'Customer', 'entity.nif': iden_number.toString() };
+        }
+      } else {
+        provider = await Provider.findOne({ cif: iden_number });
+        if (provider) {
+          filter = { 'entity.type': 'Provider', 'entity.cif': iden_number.toString() };
+        }
+      }
     } catch (e) {
       return res.status(500).send('Error');
     }
     if (!customer && !provider) {
       return res.status(404).send('Entity not found');
-    }
-    if (customer) {
-      filter = { entity: {type: 'Customer', nif: iden_number.toString()} };
-    } else if (provider) {
-      filter = { entity: {type: 'Provider', cif: iden_number.toString()} };
     }
   }
 
