@@ -75,7 +75,7 @@ customerRouter.patch('/customers', async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ['name', 'email', 'phone', 'address'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
-  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
+  if (!isValidOperation) return res.status(400).send('Invalid updates!');
 
   try {
     const customer = await Customer.findOneAndUpdate(filter, req.body, { new: true, runValidators: true });
