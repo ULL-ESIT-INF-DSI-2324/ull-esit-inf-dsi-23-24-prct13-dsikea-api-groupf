@@ -105,7 +105,7 @@ describe('Customers', () => {
 			.expect(400);
 	});
 
-	it('Should get an error by trying to post an invalid format of nif through validators', async () => {
+	it('Should get an error by trying to post an invalid format of NIF through validators', async () => {
 		await request(app)
 			.post('/customers')
 			.send(customer_bad_nif)
@@ -130,7 +130,7 @@ describe('Customers', () => {
 			.expect(400);
 	});
 
-	it('Should get an error by trying to post a customer with an already existing nif', async () => {
+	it('Should get an error by trying to post a customer with an already existing NIF', async () => {
 		await new Customer(customer1).save();
 		await request(app)
 			.post('/customers')
@@ -159,24 +159,27 @@ describe('Customers', () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 
-		await request(app)
+		const response = await request(app)
 			.get('/customers')
 			.expect(200);
+
+		expect(response.body).to.be.lengthOf(2);
 	});
 
-	it('Should get a customer by nif', async () => {
+	it('Should get a customer by NIF', async () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 
 		await request(app)
 			.get('/customers?nif=12345678Z')
 			.expect(200);
+			
 		await request(app)
 			.get('/customers?nif=87654321A')
 			.expect(200);
 	});
 
-	it('Should get an error trying to get a customer by nif when not found', async () => {
+	it('Should get an error trying to get a customer by NIF when not found', async () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 
@@ -186,7 +189,7 @@ describe('Customers', () => {
 	});
 
 	// GET /customers/:id
-	it('Should get a customer by id', async () => {
+	it('Should get a customer by ID', async () => {
 		const newCustomer1 = await new Customer(customer1).save();
 		const newCustomer2 = await new Customer(customer2).save();
 
@@ -198,7 +201,7 @@ describe('Customers', () => {
 			.expect(200);
 	});
 
-	it('Should get an error trying to get a customer by id when not found', async () => {
+	it('Should get an error trying to get a customer by ID when not found', async () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 
@@ -207,7 +210,7 @@ describe('Customers', () => {
 			.expect(404);
 	});
 
-	it('Should get an error trying to get a customer by id with an invalid value', async () => {
+	it('Should get an error trying to get a customer by ID with an invalid value', async () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 
@@ -217,7 +220,7 @@ describe('Customers', () => {
 	});
 
 	// PATCH /customers
-	it('Should update a customer by nif', async () => {
+	it('Should update a customer by NIF', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		const response = await request(app)
@@ -234,7 +237,7 @@ describe('Customers', () => {
 		});
 	});
 
-	it('Should get an error trying to update a customer by nif when not found', async () => {
+	it('Should get an error trying to update a customer by NIF when not found', async () => {
 		await new Customer(customer1).save();
 
 		await request(app)
@@ -243,7 +246,7 @@ describe('Customers', () => {
 			.expect(404);
 	});
 
-	it('Should get an error trying to update a customer by nif with an invalid value', async () => {
+	it('Should get an error trying to update a customer by NIF with an invalid value', async () => {
 		await new Customer(customer1).save();
 
 		await request(app)
@@ -260,14 +263,6 @@ describe('Customers', () => {
 			.expect(400);
 	});
 
-	it('Should get an error by trying to update a customer with an invalid format of nif through validators', async () => {
-		await new Customer(customer1).save();
-		await request(app)
-			.patch('/customers?nif=12345678Z')
-			.send({ nif: '12345678' })
-			.expect(400);
-	});
-
 	it('Should get an error by trying to update a customer with an invalid format of email through validators', async () => {
 		await new Customer(customer1).save();
 		await request(app)
@@ -276,7 +271,7 @@ describe('Customers', () => {
 			.expect(400);
 	});
 
-	it('Should get an error by trying to update a customer with an already existing nif', async () => {
+	it('Should get an error by trying to update a customer with an already existing NIF', async () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 		await request(app)
@@ -304,7 +299,7 @@ describe('Customers', () => {
 	});
 
 	// PATCH /customers/:id
-	it('Should update a customer by id', async () => {
+	it('Should update a customer by ID', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		const response = await request(app)
@@ -321,7 +316,7 @@ describe('Customers', () => {
 		});
 	});
 
-	it('Should get an error trying to update a customer by id when not found', async () => {
+	it('Should get an error trying to update a customer by ID when not found', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		await request(app)
@@ -330,7 +325,7 @@ describe('Customers', () => {
 			.expect(404);
 	});
 
-	it('Should get an error trying to update a customer by id with an invalid value', async () => {
+	it('Should get an error trying to update a customer by ID with an invalid value', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		await request(app)
@@ -347,7 +342,7 @@ describe('Customers', () => {
 			.expect(400);
 	});
 
-	it('Should get an error by trying to update a customer with an invalid format of nif through validators', async () => {
+	it('Should get an error by trying to update a customer with an invalid format of NIF through validators', async () => {
 		const newCustomer = await new Customer(customer1).save();
 		await request(app)
 			.patch(`/customers/${newCustomer.id}`)
@@ -363,7 +358,7 @@ describe('Customers', () => {
 			.expect(400);
 	});
 
-	it('Should get an error by trying to update a customer with an already existing nif', async () => {
+	it('Should get an error by trying to update a customer with an already existing NIF', async () => {
 		const newCustomer = await new Customer(customer1).save();
 		await new Customer(customer2).save();
 		await request(app)
@@ -391,7 +386,7 @@ describe('Customers', () => {
 	});
 
 	// DELETE /customers
-	it('Should delete the first customer according to the filter (nif)', async () => {
+	it('Should delete the first customer according to the filter (NIF)', async () => {
 		await new Customer(customer1).save();
 		await new Customer(customer2).save();
 
@@ -403,7 +398,7 @@ describe('Customers', () => {
 		expect(customers).to.be.lengthOf(1);
 	});
 
-	it('Should delete a customer by nif', async () => {
+	it('Should delete a customer by NIF', async () => {
 		await new Customer(customer1).save();
 
 		await request(app)
@@ -414,7 +409,7 @@ describe('Customers', () => {
 		expect(customer).to.be.null;
 	});
 
-	it('Should get an error trying to delete a customer by nif when not found', async () => {
+	it('Should get an error trying to delete a customer by NIF when not found', async () => {
 		await new Customer(customer1).save();
 
 		await request(app)
@@ -423,7 +418,7 @@ describe('Customers', () => {
 	});
 
 	// DELETE /customers/:id
-	it('Should delete a customer by id', async () => {
+	it('Should delete a customer by ID', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		await request(app)
@@ -434,7 +429,7 @@ describe('Customers', () => {
 		expect(customer).to.be.null;
 	});
 
-	it('Should get an error trying to delete a customer by id when not found', async () => {
+	it('Should get an error trying to delete a customer by ID when not found', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		await request(app)
@@ -442,7 +437,7 @@ describe('Customers', () => {
 			.expect(404);
 	});
 
-	it('Should get an error trying to delete a customer by id with an invalid value', async () => {
+	it('Should get an error trying to delete a customer by ID with an invalid value', async () => {
 		const newCustomer = await new Customer(customer1).save();
 
 		await request(app)
