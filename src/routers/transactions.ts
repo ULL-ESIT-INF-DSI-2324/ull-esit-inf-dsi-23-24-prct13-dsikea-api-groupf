@@ -105,35 +105,11 @@ transactionRouter.post('/transactions', async (req, res) => {
  *   summary: Get all transactions or by NIF or CIF
  */
 transactionRouter.get('/transactions', async (req, res) => {
-  const { iden_number } = req.query;
-  let filter = {};
-
-  if (iden_number) {
-    let customer;
-    let provider;
-    try {
-      if (req.query.nif) {
-        customer = await Customer.findOne({ nif: iden_number });
-        if (customer) {
-          filter = { 'entity.type': 'Customer', 'entity.nif': iden_number.toString() };
-        }
-      } else {
-        provider = await Provider.findOne({ cif: iden_number });
-        if (provider) {
-          filter = { 'entity.type': 'Provider', 'entity.cif': iden_number.toString() };
-        }
-      }
-    } catch (e) {
-      return res.status(500).send('Error');
-    }
-    if (!customer && !provider) {
-      return res.status(404).send('Entity not found');
-    }
-  }
+  const filter = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
 
   try {
     const transactions = await Transaction.find(filter);
-    return res.send(transactions);
+    return res.status(200).send(transactions);
   } catch (e) {
     return res.status(500).send(e);
   }
