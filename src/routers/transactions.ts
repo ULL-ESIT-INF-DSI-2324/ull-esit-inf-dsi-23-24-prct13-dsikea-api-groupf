@@ -133,13 +133,16 @@ transactionRouter.get('/transactions', async (req, res) => {
       $gte: new Date(startDateString), 
       $lte: new Date(endDateString)
     };
+    console.log('Filter by time:', time);
     filter_time = { dateTime: time };
   }
 
 	if (type) {
-	  filter_type = {type: type};
+    console.log('Filter by type:', type);
+	  filter_type = { type: type };
 	}
 
+  console.log('Final filters:', { ...filter_time, ...filter_type });
   const filter = { ...filter_time, ...filter_type };
 
   try {
