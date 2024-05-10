@@ -448,5 +448,10 @@ describe('Customers', () => {
 		await request(app)
 			.delete(`/customers/12345678`)
 			.expect(400);
+
+		// Last test delete
+		await request(app)
+			.delete(`/customers/${newCustomer.id}`)
+			.expect(200);
 	});
 });
