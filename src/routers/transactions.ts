@@ -98,30 +98,12 @@ transactionRouter.post('/transactions', async (req, res) => {
 	return res.status(200).send('Success');
 });
 
-/**
- * @swagger
- * /transactions:
- *  get:
- *   summary: Get all transactions or by NIF or CIF
- */
-/*
-transactionRouter.get('/transactions', async (req, res) => {
-  const filter = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
-
-  try {
-    const transactions = await Transaction.find(filter);
-    return res.status(200).send(transactions);
-  } catch (e) {
-    return res.status(500).send(e);
-  }
-});
-*/
 
 /**
  * @swagger
  * /transactions:
  *  get:
- *   summary: Get transactions by date range and type
+ *   summary: Get transactions by date range, type, CIF/NIF or all of them
  */
 transactionRouter.get('/transactions', async (req, res) => {
   //const { startDate, endDate, type } = req.query;
@@ -157,6 +139,26 @@ transactionRouter.get('/transactions', async (req, res) => {
   try {
     const transactions = await Transaction.find(filter);
     return res.send(transactions);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+/**
+ * @swagger
+ * /transactions/{id}:
+ *  get:
+ *   summary: Get a transaction by ID
+ */
+transactionRouter.get('/transactions/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).send('Transaction not found');
+    }
+    return res.status(200).send(transaction);
   } catch (e) {
     return res.status(500).send(e);
   }
