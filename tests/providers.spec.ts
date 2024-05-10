@@ -366,7 +366,7 @@ describe('Providers', () => {
 		await new Provider(provider2).save();
 		await request(app)
 			.patch(`/providers/${newProvider.id}`)
-			.send({ email: 'prueba2@gmail.com' })
+			.send({ email: 'provider2@gmail.com' })
 			.expect(400);
 	});
 

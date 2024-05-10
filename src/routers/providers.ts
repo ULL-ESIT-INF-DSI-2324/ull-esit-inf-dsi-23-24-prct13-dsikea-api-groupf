@@ -93,7 +93,7 @@ providerRouter.patch('/providers', async (req, res) => {
  *  patch:
  *   summary: Update a provider by ID
  */
-providerRouter.patch('/provider/:id', async (req, res) => {
+providerRouter.patch('/providers/:id', async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ['name', 'email', 'phone', 'address'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
