@@ -32,6 +32,11 @@ transactionRouter.post('/transactions', async (req, res) => {
     if (!entityModel) {
       return res.status(404).send('Entity not found');
     }
+    if (entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
+      return res.status(400).send('Invalid transaction type for Customers');
+    } else if (entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
+      return res.status(400).send('Invalid transaction type for Providers');
+    }
   } catch (e) {
     return res.status(500).send(e);
   }
@@ -43,6 +48,7 @@ transactionRouter.post('/transactions', async (req, res) => {
     const furnitureFilter = { name: item.name };
     try {
       const furnitureModel = await Furniture.findOne(furnitureFilter);
+      ///if (type === 'Refund from client' || type === 'Refund to provider') isValidRefund(type, furnitureModel, item.quantity, entityModel);
       if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
         newFurniture = new Furniture({
           type: item.body.type,
