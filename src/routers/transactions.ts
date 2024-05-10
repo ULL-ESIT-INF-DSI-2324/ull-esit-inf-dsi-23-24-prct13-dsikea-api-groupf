@@ -109,8 +109,14 @@ transactionRouter.get('/transactions', async (req, res) => {
   let filter = {};
 
   if (iden_number) {
-    const customer = await Customer.findOne({ nif: iden_number });
-    const provider = await Provider.findOne({ cif: iden_number });
+    let customer;
+    let provider;
+    try {
+      if (req.query.nif) customer = await Customer.findOne({ nif: iden_number });
+      else provider = await Provider.findOne({ cif: iden_number });
+    } catch (e) {
+      return res.status(500).send('Error');
+    }
     if (!customer && !provider) {
       return res.status(404).send('Entity not found');
     }
