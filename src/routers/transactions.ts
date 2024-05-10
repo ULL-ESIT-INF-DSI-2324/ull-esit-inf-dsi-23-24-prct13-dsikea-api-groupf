@@ -82,7 +82,7 @@ transactionRouter.post('/transactions', async (req, res) => {
 
   // Create transaction
   const transaction = new Transaction({
-    entity: entityModel,
+    entity,
     type,
     furniture,
     observations,
