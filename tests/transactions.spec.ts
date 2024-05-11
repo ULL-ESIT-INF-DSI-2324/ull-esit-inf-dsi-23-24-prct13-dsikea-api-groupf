@@ -14,9 +14,6 @@ let furniture1, furniture2, furniture3, furniture4;
 
 beforeEach(async () => {
 	await Transaction.deleteMany();
-	await Customer.deleteMany();
-	await Provider.deleteMany();
-	await Furniture.deleteMany();
 
   customer = {
     name: 'Customer 1',
