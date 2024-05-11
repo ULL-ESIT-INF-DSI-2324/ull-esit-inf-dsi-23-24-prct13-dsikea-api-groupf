@@ -8,7 +8,7 @@ import 'mocha';
 import { expect } from 'chai';
 import exp from 'constants';
 
-let transaction1, transaction2;
+let transaction1, transaction2, transaction3, transaction4, transaction5;
 let customer, provider;
 let furniture1, furniture2, furniture3, furniture4;
 
@@ -90,6 +90,43 @@ beforeEach(async () => {
 		observations: 'Ordering new stock for the store.',
 		totalAmount: 900
 	};
+
+  transaction3 = {
+    entity: { type: 'Customer', nif: '12345678A' },
+    type: 'Refund from client',
+    furniture: [
+      { name: 'Chair 1', quantity: 1 }
+    ],
+    observations: 'Customer wants to return a chair.',
+    totalAmount: 100
+  };
+
+  transaction4 = {
+    entity: { type: 'Provider', cif: 'A12345678' },
+    type: 'Refund to provider',
+    furniture: [
+      { name: 'Sofa 1', quantity: 1 }
+    ],
+    observations: 'Returning a sofa to the provider.',
+    totalAmount: 400
+  };
+
+  transaction5 = {
+    entity: { type: 'Provider', cif: 'A12345678' },
+    type: 'Purchase Order',
+    furniture: [
+      { name: 'New Chair', 
+      body: {
+        type: 'Chair',
+        description: 'A new chair',
+        color: 'Black',
+        dimensions: '50x50x50',
+        price: 100
+      },
+      quantity: 10 }
+    ],
+    totalAmount: 1000
+  };
 });
 
 describe('Transactions', () => {
@@ -140,6 +177,70 @@ describe('Transactions', () => {
 
   });
 
+  it ('Should create a new Refund from client transaction' , async () => {
+    await new Customer(customer).save();
+    await new Furniture(furniture1).save();
+
+    const response3 = await request(app)
+      .post('/transactions')
+      .send(transaction3)
+      .expect(201);
+
+    expect(response3.body).to.deep.include({
+      entity: transaction3.entity,
+      type: transaction3.type,
+      observations: transaction3.observations,
+      totalAmount: transaction3.totalAmount
+    });
+
+    expect(response3.body.furniture).to.have.lengthOf(1);
+    expect(response3.body.furniture[0].name).to.equal('Chair 1');
+
+  });
+
+  it ('Should create a new Refund to provider transaction' , async () => {
+    await new Provider(provider).save();
+    await new Furniture(furniture3).save();
+
+    const response4 = await request(app)
+      .post('/transactions')
+      .send(transaction4)
+      .expect(201);
+
+    expect(response4.body).to.deep.include({
+      entity: transaction4.entity,
+      type: transaction4.type,
+      observations: transaction4.observations,
+      totalAmount: transaction4.totalAmount
+    });
+
+    expect(response4.body.furniture).to.have.lengthOf(1);
+    expect(response4.body.furniture[0].name).to.equal('Sofa 1');
+
+  });
+
+  it ('Should create a new Purchase Order transaction with new furniture' , async () => {
+    await new Provider(provider).save();
+
+    const response5 = await request(app)
+      .post('/transactions')
+      .send(transaction5)
+      .expect(201);
+
+    expect(response5.body).to.deep.include({
+      entity: transaction5.entity,
+      type: transaction5.type,
+      totalAmount: transaction5.totalAmount
+    });
+
+    expect(response5.body.furniture).to.have.lengthOf(1);
+    expect(response5.body.furniture[0].name).to.equal('New Chair');
+
+    const newFurniture = await Furniture.findOne({ name: 'New Chair' });
+    expect(newFurniture).to.not.be.null;
+
+  });
+
 	it('Should get an error by trying to post a transaction without required values', async () => {
 		await request(app)
 			.post('/transactions')
@@ -183,6 +284,7 @@ describe('Transactions', () => {
   });
 
   it('Should get an error by trying to post a transaction with invalid furniture quantity', async () => {
+    await new Customer(customer).save();
     await new Furniture(furniture1).save();
 
     await request(app)
@@ -200,16 +302,46 @@ describe('Transactions', () => {
       .expect(400);
   });
 
+  it('Should get an error by trying to post a transaction with type Purchase Order and being a Customer', async () => {
+    await new Customer(customer).save();
+
+    await request(app)
+      .post('/transactions')
+      .send({ ...transaction1, type: 'Purchase Order' })
+      .expect(400);
+  });
+
+  it('Should get an error by trying to post a transaction with type Refund from client and being a Provider', async () => {
+    await new Provider(provider).save();
+
+    await request(app)
+      .post('/transactions')
+      .send({ ...transaction4, type: 'Refund from client' })
+      .expect(400);
+  });
+
+  it('Should get an error by trying to post a transaction with type Refund to provider and being a Customer', async () => {
+    await new Customer(customer).save();
+
+    await request(app)
+      .post('/transactions')
+      .send({ ...transaction3, type: 'Refund to provider' })
+      .expect(400);
+  });
+
 	// GET /transactions
 	it('Should get all transactions', async () => {
 		await new Transaction(transaction1).save();
 		await new Transaction(transaction2).save();
+    await new Transaction(transaction3).save();
+    await new Transaction(transaction4).save();
+    await new Transaction(transaction5).save();
 
 		const response = await request(app)
 			.get('/transactions')
 			.expect(200);
 
-		expect(response.body.length).to.equal(2);
+		expect(response.body.length).to.equal(5);
 	});
 
 	it('Should get transactions by date range', async () => {
@@ -217,7 +349,7 @@ describe('Transactions', () => {
 		await new Transaction(transaction2).save();
 
 		const startDate = new Date('2024-01-01');
-		const endDate = new Date('2024-12-31');
+		const endDate = new Date('2030-12-31');
 
 		const response = await request(app)
 			.get('/transactions')
@@ -267,4 +399,70 @@ describe('Transactions', () => {
 		expect(response.body[0].entity.type).to.equal('Provider');
 		expect(response.body[0].entity.cif).to.equal('A12345678');
 	});
+
+  it('Should get transactions by date range, type and entity CIF', async () => {
+    await new Transaction(transaction1).save();
+    await new Transaction(transaction2).save();
+    await new Transaction(transaction3).save();
+    await new Transaction(transaction4).save();
+
+    const startDate = new Date('2024-01-01');
+    const endDate = new Date('2030-12-31');
+
+    const response = await request(app)
+      .get('/transactions')
+      .query({ startDate, endDate, type: 'Sell Order', cif: 'A12345678' })
+      .expect(200);
+
+    expect(response.body.length).to.equal(0);
+  });
+
+  it('Should get an error by trying to get transactions with invalid date range', async () => {
+    await request(app)
+      .get('/transactions')
+      .query({ startDate: 'InvalidDate', endDate: 'InvalidDate' })
+      .expect(400);
+  });
+
+  // PATCH /transactions/:id
+  it('Should update a transaction by ID', async () => {
+    await new Transaction(transaction1).save();
+
+    await request(app)
+      .post(`/transactions`)
+      .send(transaction1)
+
+    const response = await request(app)
+      .patch(`/transactions/${transaction1._id}`)
+      .send({ observations: 'Updated observations' })
+      .expect(200);
+
+    expect(response.body.observations).to.equal('Updated observations');
+  });
+
+  it('Should get an error by trying to update a transaction with invalid ID', async () => {
+    await request(app)
+      .patch('/transactions/invalidID')
+      .send({ observations: 'Updated observations' })
+      .expect(404);
+  });
+
+  // DELETE /transactions/:id
+  it('Should delete a transaction by ID', async () => {
+    await new Transaction(transaction1).save();
+
+    await request(app)
+      .delete(`/transactions/${transaction1._id}`)
+      .expect(200);
+
+    const transaction = await Transaction.findById(transaction1._id);
+    expect(transaction).to.be.null;
+  });
+
+  it('Should get an error by trying to delete a transaction with invalid ID', async () => {
+    await request(app)
+      .delete('/transactions/invalidID')
+      .expect(404);
+  });
+
 });
