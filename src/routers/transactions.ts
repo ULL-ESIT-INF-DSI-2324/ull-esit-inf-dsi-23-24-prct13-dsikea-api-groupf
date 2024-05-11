@@ -168,48 +168,20 @@ transactionRouter.get('/transactions/:id', async (req, res) => {
  */
 transactionRouter.patch('/transactions/:id', async (req, res) => {
   const id = req.params.id;
-  const { entity, type, furniture, observations } = req.body;
+
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['furniture', 'observations'];
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+  if (!isValidOperation) {
+    return res.status(400).send('Invalid updates');
+  }
+
   let transaction;
-  
+
   try {
     transaction = await Transaction.findById(id);
     if (!transaction) {
       return res.status(404).send('Transaction not found');
-    }
-  } catch (e) {
-    return res.status(400).send(e)
-  }
-
-  // Validate entity
-  let entityModel;
-  let filter = {};
-  try {
-    if (entity) {
-      if (entity.type === 'Customer') {
-        filter = { nif: entity.nif.toString() };
-        entityModel = await Customer.findOne(filter);
-      } else if (entity.type === 'Provider') {
-        filter = { cif: entity.cif.toString() };
-        entityModel = await Provider.findOne(filter);
-      } else {
-        return res.status(400).send('Invalid entity type');
-      }
-      if (!entityModel) {
-      return res.status(404).send('Entity not found');
-      }
-      if (type) {
-        if (entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
-          return res.status(400).send('Invalid transaction type for Customers');
-        } else if (entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
-          return res.status(400).send('Invalid transaction type for Providers');
-        }
-      }
-    } else if (type) {
-      if (transaction.entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
-        return res.status(400).send('Invalid transaction type for Customers');
-      } else if (transaction.entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
-        return res.status(400).send('Invalid transaction type for Providers');
-      }
     }
   } catch (e) {
     return res.status(400).send(e);
@@ -218,26 +190,14 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
   // Validate furniture
   let totalAmount = 0;
   let newFurniture;
-  for (const item of furniture) {
+  for (const item of req.body.furniture) {
     const furnitureFilter = { name: item.name };
     try {
       const furnitureModel = await Furniture.findOne(furnitureFilter);
-      if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
-        newFurniture = new Furniture({
-          type: item.body.type,
-          name: item.name,
-          description: item.body.description,
-          color: item.body.color,
-          dimensions: item.body.dimensions,
-          price: item.body.price,
-          stock: item.quantity
-        });
-        totalAmount += newFurniture.price * item.quantity;
-        await newFurniture.save();
-      } else if (!furnitureModel) {
+      if (!furnitureModel) {
         return res.status(404).send('Furniture not found');
       } else {
-        if (type === 'Purchase Order' || type === 'Refund from client') {
+        if (transaction.type === 'Purchase Order' || transaction.type === 'Refund from client') {
           furnitureModel.stock += item.quantity;
         } else {
           if (furnitureModel.stock < item.quantity) {
@@ -245,24 +205,18 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
           }
           furnitureModel.stock -= item.quantity;
         }
-        totalAmount += furnitureModel.price * item.quantity;
+        transaction.totalAmount += furnitureModel.price * item.quantity;
         await furnitureModel.save();
+        await transaction.save();
       }
     } catch (e) {
       return res.status(400).send(e);
     }
   }
 
-  // Update transaction
   try {
-    const new_transaction = await Transaction.findByIdAndUpdate(id, {
-      entity,
-      type,
-      furniture,
-      observations,
-      totalAmount
-    }, { new: true, runValidators: true });
-    return res.status(200).send(new_transaction);
+    const transaction = await Transaction.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+    return res.status(200).send(transaction);
   } catch (e) {
     return res.status(400).send(e);
   }
