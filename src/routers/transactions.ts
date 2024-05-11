@@ -188,7 +188,6 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
   }
   
   // Validate furniture
-  let totalAmount = 0;
   let newFurniture;
   if (req.body.furniture.length > 0) transaction.totalAmount = 0;
   for (const item of req.body.furniture) {
