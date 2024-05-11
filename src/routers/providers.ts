@@ -5,10 +5,10 @@ import { Provider } from '../models/provider.js';
 export const providerRouter = express.Router();
 
 /**
- * @swagger
- * /providers:
- *  post:
- *   summary: Create a new provider
+ * Create a new provider.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The created provider.
  */
 providerRouter.post('/providers', async (req, res) => {
   const provider = new Provider(req.body);
@@ -21,10 +21,10 @@ providerRouter.post('/providers', async (req, res) => {
 });
 
 /**
- * @swagger
- * /providers:
- *  get:
- *   summary: Get a provider by CIF or all of them
+ * Get a provider by CIF or get all providers.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The provider(s) found.
  */
 providerRouter.get('/providers', async (req, res) => {
   const filter = req.query.cif ? { cif: req.query.cif.toString() } : {};
@@ -41,10 +41,10 @@ providerRouter.get('/providers', async (req, res) => {
 });
 
 /**
- * @swagger
- * /providers/{id}:
- *  get:
- *   summary: Get a provider by ID
+ * Get a provider by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The provider found.
  */
 providerRouter.get('/providers/:id', async (req, res) => {
   const id = req.params.id;
@@ -61,10 +61,10 @@ providerRouter.get('/providers/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /providers:
- *  patch:
- *   summary: Update a provider by CIF
+ * Update a provider by CIF.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The updated provider.
  */
 providerRouter.patch('/providers', async (req, res) => {
   if(!req.query.cif) {
@@ -88,10 +88,10 @@ providerRouter.patch('/providers', async (req, res) => {
 });
 
 /**
- * @swagger
- * /providers/{id}:
- *  patch:
- *   summary: Update a provider by ID
+ * Update a provider by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The updated provider.
  */
 providerRouter.patch('/providers/:id', async (req, res) => {
   const updates = Object.keys(req.body);
@@ -113,10 +113,10 @@ providerRouter.patch('/providers/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /providers/{id}:
- *  delete:
- *   summary: Delete a provider by ID
+ * Delete a provider by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The deleted provider.
  */
 providerRouter.delete('/providers/:id', async (req, res) => {
   const id = req.params.id;
@@ -133,10 +133,10 @@ providerRouter.delete('/providers/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /providers:
- *  delete:
- *   summary: Delete a provider by CIF or all of them
+ * Delete a provider by CIF or delete all providers.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The deleted provider(s).
  */
 providerRouter.delete('/providers', async (req, res) => {
   const filter = req.query.cif? { cif: req.query.cif.toString() } : {};

@@ -7,11 +7,12 @@ import { Furniture } from '../models/furniture.js';
 
 export const transactionRouter = express.Router();
 
+
 /**
- * @swagger
- * /transactions:
- *  post:
- *   summary: Create a new transaction
+ * Create a new transaction.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The created transaction or an error response.
  */
 transactionRouter.post('/transactions', async (req, res) => {
   let { entity, type, furniture, observations } = req.body;
@@ -99,10 +100,10 @@ transactionRouter.post('/transactions', async (req, res) => {
 
 
 /**
- * @swagger
- * /transactions:
- *  get:
- *   summary: Get transactions by date range, type, CIF/NIF or all of them
+ * Get transactions by date range, type, CIF/NIF or all of them.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The transactions that match the specified filters or an error response.
  */
 transactionRouter.get('/transactions', async (req, res) => {
   //const { startDate, endDate, type } = req.query;
@@ -141,10 +142,10 @@ transactionRouter.get('/transactions', async (req, res) => {
 });
 
 /**
- * @swagger
- * /transactions/{id}:
- *  get:
- *   summary: Get a transaction by ID
+ * Get a transaction by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The transaction with the specified ID or an error response.
  */
 transactionRouter.get('/transactions/:id', async (req, res) => {
   const id = req.params.id;
@@ -161,10 +162,10 @@ transactionRouter.get('/transactions/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /transactions/{id}:
- *  put:
- *   summary: Update a transaction by ID
+ * Update a transaction by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The updated transaction or an error response.
  */
 transactionRouter.patch('/transactions/:id', async (req, res) => {
   const id = req.params.id;
@@ -222,10 +223,10 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /transactions/{id}:
- *  delete:
- *   summary: Delete a transaction by ID
+ * Delete a transaction by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The deleted transaction or an error response.
  */
 transactionRouter.delete('/transactions/:id', async (req, res) => {
   const id = req.params.id;

@@ -5,10 +5,10 @@ import { Furniture } from '../models/furniture.js';
 export const furnitureRouter = express.Router();
 
 /**
- * @swagger
- * /furnitures:
- *  post:
- *   summary: Create a new furniture
+ * Create a new furniture.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The created furniture.
  */
 furnitureRouter.post('/furnitures', async (req, res) => {
   const furniture = new Furniture(req.body);
@@ -21,10 +21,10 @@ furnitureRouter.post('/furnitures', async (req, res) => {
 });
 
 /**
- * @swagger
- * /furnitures:
- *  get:
- *   summary: Get furniture by name, description, color or all of them
+ * Get furniture by name, description, color or all of them.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The matching furniture.
  */
 furnitureRouter.get('/furnitures', async (req, res) => {
 
@@ -45,10 +45,10 @@ furnitureRouter.get('/furnitures', async (req, res) => {
 });
 
 /**
- * @swagger
- * /furnitures/{id}:
- *  get:
- *   summary: Get a furniture by ID
+ * Get a furniture by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The matching furniture.
  */
 furnitureRouter.get('/furnitures/:id', async (req, res) => {
   const id = req.params.id;
@@ -65,10 +65,10 @@ furnitureRouter.get('/furnitures/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /furnitures:
- *  patch:
- *   summary: Update a furniture by name, description, color or all of them
+ * Update a furniture by name, description, color or all of them.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The updated furniture.
  */
 furnitureRouter.patch('/furnitures', async (req, res) => {
   if(!req.query.name && !req.query.description && !req.query.color) {
@@ -97,10 +97,10 @@ furnitureRouter.patch('/furnitures', async (req, res) => {
 });
 
 /**
- * @swagger
- * /furnitures/{id}:
- *  patch:
- *   summary: Update a furniture by ID
+ * Update a furniture by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The updated furniture.
  */
 furnitureRouter.patch('/furnitures/:id', async (req, res) => {
   const id = req.params.id;
@@ -122,10 +122,10 @@ furnitureRouter.patch('/furnitures/:id', async (req, res) => {
 });
 
 /**
- * @swagger
- * /furnitures:
- *  delete:
- *   summary: Delete a furniture by name, description, color or all of them
+ * Delete a furniture by name, description, color or all of them.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The deleted furniture.
  */
 furnitureRouter.delete('/furnitures', async (req, res) => {
 
@@ -146,10 +146,10 @@ furnitureRouter.delete('/furnitures', async (req, res) => {
 });
 
 /**
- * @swagger
- * /furnitures/{id}:
- *  delete:
- *   summary: Delete a furniture by ID
+ * Delete a furniture by ID.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The deleted furniture.
  */
 furnitureRouter.delete('/furnitures/:id', async (req, res) => {
   const id = req.params.id;
