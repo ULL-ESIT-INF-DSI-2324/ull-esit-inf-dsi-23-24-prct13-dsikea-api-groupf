@@ -169,27 +169,47 @@ transactionRouter.get('/transactions/:id', async (req, res) => {
 transactionRouter.patch('/transactions/:id', async (req, res) => {
   const id = req.params.id;
   const { entity, type, furniture, observations } = req.body;
+  let transaction;
+  
+  try {
+    transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).send('Transaction not found');
+    }
+  } catch (e) {
+    return res.status(400).send(e)
+  }
 
   // Validate entity
   let entityModel;
   let filter = {};
   try {
-    if (entity.type === 'Customer') {
-      filter = { nif: entity.nif.toString() };
-      entityModel = await Customer.findOne(filter);
-    } else if (entity.type === 'Provider') {
-      filter = { cif: entity.cif.toString() };
-      entityModel = await Provider.findOne(filter);
-    } else {
-      return res.status(400).send('Invalid entity type');
-    }
-    if (!entityModel) {
+    if (entity) {
+      if (entity.type === 'Customer') {
+        filter = { nif: entity.nif.toString() };
+        entityModel = await Customer.findOne(filter);
+      } else if (entity.type === 'Provider') {
+        filter = { cif: entity.cif.toString() };
+        entityModel = await Provider.findOne(filter);
+      } else {
+        return res.status(400).send('Invalid entity type');
+      }
+      if (!entityModel) {
       return res.status(404).send('Entity not found');
-    }
-    if (entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
-      return res.status(400).send('Invalid transaction type for Customers');
-    } else if (entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
-      return res.status(400).send('Invalid transaction type for Providers');
+      }
+      if (type) {
+        if (entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
+          return res.status(400).send('Invalid transaction type for Customers');
+        } else if (entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
+          return res.status(400).send('Invalid transaction type for Providers');
+        }
+      }
+    } else if (type) {
+      if (transaction.entity.type === 'Customer' && (type === 'Refund to provider' || type === 'Purchase Order')) {
+        return res.status(400).send('Invalid transaction type for Customers');
+      } else if (transaction.entity.type === 'Provider' && (type === 'Refund from client' || type === 'Sell Order')) {
+        return res.status(400).send('Invalid transaction type for Providers');
+      }
     }
   } catch (e) {
     return res.status(400).send(e);
@@ -202,7 +222,6 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
     const furnitureFilter = { name: item.name };
     try {
       const furnitureModel = await Furniture.findOne(furnitureFilter);
-      ///if (type === 'Refund from client' || type === 'Refund to provider') isValidRefund(type, furnitureModel, item.quantity, entityModel);
       if (!furnitureModel && (type === 'Purchase Order' || type === 'Refund from client')) {
         newFurniture = new Furniture({
           type: item.body.type,
@@ -236,17 +255,14 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
 
   // Update transaction
   try {
-    const transaction = await Transaction.findByIdAndUpdate(id, {
+    const new_transaction = await Transaction.findByIdAndUpdate(id, {
       entity,
       type,
       furniture,
       observations,
       totalAmount
     }, { new: true, runValidators: true });
-    if (!transaction) {
-      return res.status(404).send('Transaction not found');
-    }
-    return res.status(200).send(transaction);
+    return res.status(200).send(new_transaction);
   } catch (e) {
     return res.status(400).send(e);
   }
