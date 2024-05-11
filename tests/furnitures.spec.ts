@@ -30,7 +30,7 @@ beforeEach(async () => {
 	};
 });
 
-describe('Furniture', () => {
+describe('Furnitures', () => {
 	// POST /furnitures
 	it('Should create a new furniture', async () => {
 		const response1 = await request(app)

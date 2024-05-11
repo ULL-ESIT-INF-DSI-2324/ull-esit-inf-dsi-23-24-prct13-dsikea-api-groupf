@@ -14,7 +14,7 @@ export const transactionRouter = express.Router();
  *   summary: Create a new transaction
  */
 transactionRouter.post('/transactions', async (req, res) => {
-  const { entity, type, furniture, observations } = req.body;
+  let { entity, type, furniture, observations } = req.body;
 
   // Validate entity
   let entityModel;
@@ -120,19 +120,16 @@ transactionRouter.get('/transactions', async (req, res) => {
       $gte: new Date(startDateString), 
       $lte: new Date(endDateString)
     };
-    console.log('Filter by time:', time);
     filter_time = { dateTime: time };
   }
 
 	if (type) {
-    console.log('Filter by type:', type);
 	  filter_type = { type: type };
 	}
 
   const filter_iden = req.query.nif ? { entity: {type: 'Customer', nif: req.query.nif.toString()} } : 
                                       (req.query.cif ? { entity: {type: 'Provider', cif: req.query.cif.toString()} } : {});
 
-  console.log('Final filters:', { ...filter_time, ...filter_type, ...filter_iden });
   const filter = { ...filter_time, ...filter_type, ...filter_iden };
 
   try {
