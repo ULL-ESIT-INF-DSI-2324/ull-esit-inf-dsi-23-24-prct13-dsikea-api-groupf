@@ -218,7 +218,7 @@ transactionRouter.patch('/transactions/:id', async (req, res) => {
     const transaction = await Transaction.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
     return res.status(200).send(transaction);
   } catch (e) {
-    return res.status(400).send(e);
+    return res.status(400).send(e); 
   }
 });
 
