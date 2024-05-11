@@ -12,7 +12,7 @@
     "test": "env-cmd -f ./config/test.env mocha --exit",
     "test-coveralls": "env-cmd -f ./config/coveralls.env mocha --exit",
     "test-sonar": "env-cmd -f ./config/sonar.env mocha --exit",
-    "coverage": "c8 npm test-coveralls && c8 report --reporter=lcov",
+    "coverage": "c8 npm run test-coveralls && c8 report --reporter=lcov",
     "coverage-sonar": "c8 npm run test-sonar && c8 report --reporter=lcov"
   },
   "keywords": [],
