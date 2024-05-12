@@ -27,8 +27,260 @@
 <li>Desplegar el API en Render con la base de datos de MongoDB Atlas desplegada en la nube.</li>
 </ol>
 <hr>
-<a id="md:tests-y-código-implementado" class="tsd-anchor"></a><h2><a href="#md:tests-y-código-implementado">Tests y Código Implementado</a></h2><hr>
-<a id="md:conclusión" class="tsd-anchor"></a><h2><a href="#md:conclusión">Conclusión</a></h2><hr>
+<a id="md:tests-y-código-implementado" class="tsd-anchor"></a><h2><a href="#md:tests-y-código-implementado">Tests y Código Implementado</a></h2><a id="md:código-implementado" class="tsd-anchor"></a><h3><a href="#md:código-implementado">Código Implementado</a></h3><a id="md:mongoosets" class="tsd-anchor"></a><h4><a href="#md:mongoosets">mongoose.ts</a></h4><p>Este archivo establece la conexión con la base de datos MongoDB utilizando Mongoose, una librería de modelado de objetos para Node.js.</p>
+<p>Primero, importa la función connect de Mongoose para establecer la conexión. Luego, intenta conectar con la base de datos utilizando la URL proporcionada en la variable de entorno MONGODB_URL.</p>
+<p>Si la conexión es exitosa, se muestra un mensaje en la consola indicando que la conexión se ha establecido correctamente. En caso de que ocurra algún error durante la conexión, se captura y se muestra en la consola.</p>
+<a id="md:customerts" class="tsd-anchor"></a><h4><a href="#md:customerts">customer.ts</a></h4><p>Este archivo define el modelo <code>Customer</code> para representar los datos de los clientes en la base de datos. Utiliza Mongoose para definir el esquema y la interfaz del cliente.</p>
+<ul>
+<li><p><strong>CustomerInterface</strong>: Define la interfaz para los documentos de cliente, que incluye campos como nombre, NIF (Número de Identificación Fiscal), dirección, correo electrónico y número de teléfono.</p>
+</li>
+<li><p><strong>customerSchema</strong>: Define el esquema del cliente utilizando la clase <code>Schema</code> de Mongoose. Este esquema especifica los campos del cliente, sus tipos de datos, restricciones y validaciones.</p>
+<ul>
+<li><p><strong>name</strong>: Nombre del cliente. Se define como una cadena de texto que debe empezar con una letra mayúscula.</p>
+</li>
+<li><p><strong>nif</strong>: NIF del cliente. Se define como una cadena de texto única de exactamente 9 caracteres alfanuméricos que cumple con ciertos patrones de validación.</p>
+</li>
+<li><p><strong>address</strong>: Dirección del cliente. Se define como una cadena de texto.</p>
+</li>
+<li><p><strong>email</strong>: Correo electrónico del cliente. Se define como una cadena de texto que debe tener un formato de correo electrónico válido.</p>
+</li>
+<li><p><strong>phone</strong>: Número de teléfono del cliente. Se define como una cadena de texto única que debe cumplir con ciertas condiciones para ser considerado válido.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Customer</strong>: Define el modelo de cliente utilizando la función <code>model</code> de Mongoose, que toma como argumentos el nombre del modelo y el esquema correspondiente. Este modelo se exporta para que pueda ser utilizado en otras partes de la aplicación.</p>
+</li>
+</ul>
+<a id="md:providerts" class="tsd-anchor"></a><h4><a href="#md:providerts">provider.ts</a></h4><p>Este archivo define el modelo <code>Provider</code> para representar los datos de los proveedores en la base de datos. Utiliza Mongoose para definir el esquema y la interfaz del proveedor.</p>
+<ul>
+<li><p><strong>ProviderInterface</strong>: Define la interfaz para los documentos de proveedor, que incluye campos como nombre, CIF (Código de Identificación Fiscal), dirección, correo electrónico y número de teléfono.</p>
+</li>
+<li><p><strong>providerSchema</strong>: Define el esquema del proveedor utilizando la clase <code>Schema</code> de Mongoose. Este esquema especifica los campos del proveedor, sus tipos de datos, restricciones y validaciones.</p>
+<ul>
+<li><p><strong>name</strong>: Nombre del proveedor. Se define como una cadena de texto que debe empezar con una letra mayúscula.</p>
+</li>
+<li><p><strong>cif</strong>: CIF del proveedor. Se define como una cadena de texto única de exactamente 9 caracteres alfanuméricos que cumple con ciertos patrones de validación.</p>
+</li>
+<li><p><strong>address</strong>: Dirección del proveedor. Se define como una cadena de texto.</p>
+</li>
+<li><p><strong>email</strong>: Correo electrónico del proveedor. Se define como una cadena de texto que debe tener un formato de correo electrónico válido.</p>
+</li>
+<li><p><strong>phone</strong>: Número de teléfono del proveedor. Se define como una cadena de texto única que debe cumplir con ciertas condiciones para ser considerado válido.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Provider</strong>: Define el modelo de proveedor utilizando la función <code>model</code> de Mongoose, que toma como argumentos el nombre del modelo y el esquema correspondiente. Este modelo se exporta para que pueda ser utilizado en otras partes de la aplicación.</p>
+</li>
+</ul>
+<a id="md:furniturets" class="tsd-anchor"></a><h4><a href="#md:furniturets">furniture.ts</a></h4><p>Este archivo define el esquema del modelo de datos para los muebles y exporta el modelo <code>Furniture</code> utilizando Mongoose. El modelo incluye las siguientes propiedades:</p>
+<ul>
+<li><strong>type</strong>: Tipo de mueble, representado como una cadena. Es obligatorio y se valida mediante una lista de valores permitidos (enum).</li>
+<li><strong>name</strong>: Nombre del mueble, una cadena única que debe comenzar con una letra mayúscula.</li>
+<li><strong>description</strong>: Descripción del mueble, una cadena que describe las características del mueble.</li>
+<li><strong>color</strong>: Color del mueble, una cadena que representa el color del mueble.</li>
+<li><strong>dimensions</strong>: Dimensiones del mueble, una cadena que describe las dimensiones físicas del mueble.</li>
+<li><strong>price</strong>: Precio del mueble, un número que representa el costo del mueble. Debe ser mayor o igual a cero.</li>
+<li><strong>stock</strong>: Stock del mueble, un número que indica la cantidad disponible en el inventario. Debe ser mayor o igual a cero.</li>
+</ul>
+<p>El esquema define restricciones de validación para garantizar que los datos cumplan con ciertos criterios antes de ser almacenados en la base de datos. Por ejemplo, el nombre del mueble debe comenzar con una letra mayúscula y no debe haber nombres duplicados. El precio y el stock deben ser valores numéricos no negativos. El tipo de mueble se valida mediante una lista predefinida de valores permitidos. Si alguna de estas validaciones falla, se lanzará un error. El modelo <code>Furniture</code> se utiliza luego en las rutas para interactuar con la base de datos y realizar operaciones CRUD sobre los muebles.</p>
+<a id="md:transactionts" class="tsd-anchor"></a><h4><a href="#md:transactionts">transaction.ts</a></h4><p>Este archivo define el esquema del modelo de datos para las transacciones y exporta el modelo <code>Transaction</code> utilizando Mongoose. El modelo incluye las siguientes propiedades:</p>
+<ul>
+<li><strong>entity</strong>: Representa la entidad involucrada en la transacción, que puede ser un proveedor o un cliente. Se almacena como un objeto que incluye un tipo (referencia a <code>ProviderInterface</code> o <code>CustomerInterface</code>) y opcionalmente un NIF (para el cliente) o un CIF (para el proveedor).</li>
+<li><strong>type</strong>: Tipo de transacción, que puede ser una orden de compra, una orden de venta, un reembolso del cliente o un reembolso al proveedor.</li>
+<li><strong>furniture</strong>: Array que contiene los muebles involucrados en la transacción, cada uno representado como un objeto que incluye el nombre del mueble, su descripción, color, dimensiones, precio y cantidad.</li>
+<li><strong>dateTime</strong>: Fecha y hora de la transacción, almacenada como un objeto Date. Por defecto, se establece en la fecha y hora actuales.</li>
+<li><strong>observations</strong>: Observaciones adicionales sobre la transacción, almacenadas como una cadena de texto.</li>
+<li><strong>totalAmount</strong>: Importe total de la transacción.</li>
+</ul>
+<p>El esquema define restricciones de validación para garantizar que los datos cumplan con ciertos criterios antes de ser almacenados en la base de datos. Por ejemplo, el tipo de transacción se valida mediante una lista predefinida de valores permitidos. El nombre del mueble se valida como una referencia al modelo <code>Furniture</code>, y la cantidad debe ser un número entero positivo mayor que cero.</p>
+<p>El modelo <code>Transaction</code> se utiliza luego en las rutas para interactuar con la base de datos y realizar operaciones CRUD sobre las transacciones.</p>
+<a id="md:defaultts" class="tsd-anchor"></a><h4><a href="#md:defaultts">default.ts</a></h4><p>Este archivo define un router que maneja todas las solicitudes para rutas que no coinciden con ninguna otra ruta definida en la aplicación. Utiliza el método <code>all</code> de Express para capturar todas las solicitudes HTTP (GET, POST, PUT, DELETE, etc.) para cualquier ruta que no haya sido manejada previamente por otro router.</p>
+<p>Cuando una solicitud llega a una ruta no definida, este router responde con un código de estado HTTP 501 (Not Implemented), indicando que el servidor no reconoce o no admite el método de solicitud utilizado.</p>
+<p>Este enfoque puede ser útil para garantizar que todas las solicitudes reciban una respuesta, incluso si no coinciden con ninguna ruta específica definida en la aplicación.</p>
+<a id="md:customersts" class="tsd-anchor"></a><h4><a href="#md:customersts">customers.ts</a></h4><p>Este archivo define un router para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) relacionadas con los clientes. Aquí están las operaciones definidas:</p>
+<ol>
+<li><p><strong>Crear un nuevo cliente</strong>: Maneja las solicitudes POST en la ruta &#39;/customers&#39;. Crea un nuevo cliente con los datos proporcionados en el cuerpo de la solicitud y lo guarda en la base de datos.</p>
+</li>
+<li><p><strong>Obtener clientes</strong>: Maneja las solicitudes GET en la ruta &#39;/customers&#39;. Recupera todos los clientes que coinciden con el filtro proporcionado en la consulta. Si no se proporciona ningún filtro, se devuelven todos los clientes.</p>
+</li>
+<li><p><strong>Obtener un cliente por ID</strong>: Maneja las solicitudes GET en la ruta &#39;/customers/:id&#39;. Busca un cliente por su ID y lo devuelve si se encuentra.</p>
+</li>
+<li><p><strong>Actualizar un cliente por NIF o ID</strong>: Maneja las solicitudes PATCH en las rutas &#39;/customers&#39; (por NIF) y &#39;/customers/:id&#39; (por ID). Actualiza un cliente según los datos proporcionados en el cuerpo de la solicitud.</p>
+</li>
+<li><p><strong>Eliminar un cliente por NIF o ID</strong>: Maneja las solicitudes DELETE en las rutas &#39;/customers&#39; (por NIF) y &#39;/customers/:id&#39; (por ID). Elimina un cliente según el filtro proporcionado en la consulta o por su ID.</p>
+</li>
+</ol>
+<p>Estas rutas proporcionan una interfaz para interactuar con la colección de clientes en la base de datos, permitiendo crear, leer, actualizar y eliminar clientes según sea necesario.</p>
+<a id="md:providersts" class="tsd-anchor"></a><h4><a href="#md:providersts">providers.ts</a></h4><p>Este archivo define un router para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) relacionadas con los proveedores. Aquí están las operaciones definidas:</p>
+<ol>
+<li><p><strong>Crear un nuevo proveedor</strong>: Maneja las solicitudes POST en la ruta &#39;/providers&#39;. Crea un nuevo proveedor con los datos proporcionados en el cuerpo de la solicitud y lo guarda en la base de datos.</p>
+</li>
+<li><p><strong>Obtener proveedores</strong>: Maneja las solicitudes GET en la ruta &#39;/providers&#39;. Recupera todos los proveedores que coinciden con el filtro proporcionado en la consulta. Si no se proporciona ningún filtro, se devuelven todos los proveedores.</p>
+</li>
+<li><p><strong>Obtener un proveedor por ID</strong>: Maneja las solicitudes GET en la ruta &#39;/providers/:id&#39;. Busca un proveedor por su ID y lo devuelve si se encuentra.</p>
+</li>
+<li><p><strong>Actualizar un proveedor por CIF o ID</strong>: Maneja las solicitudes PATCH en las rutas &#39;/providers&#39; (por CIF) y &#39;/providers/:id&#39; (por ID). Actualiza un proveedor según los datos proporcionados en el cuerpo de la solicitud.</p>
+</li>
+<li><p><strong>Eliminar un proveedor por CIF o ID</strong>: Maneja las solicitudes DELETE en las rutas &#39;/providers&#39; (por CIF) y &#39;/providers/:id&#39; (por ID). Elimina un proveedor según el filtro proporcionado en la consulta o por su ID.</p>
+</li>
+</ol>
+<p>Estas rutas proporcionan una interfaz para interactuar con la colección de proveedores en la base de datos, permitiendo crear, leer, actualizar y eliminar proveedores según sea necesario.</p>
+<a id="md:furniturests" class="tsd-anchor"></a><h4><a href="#md:furniturests">furnitures.ts</a></h4><p>El archivo <code>furnitures.ts</code> define un router para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) relacionadas con los muebles. Aquí están las operaciones definidas:</p>
+<ol>
+<li><p><strong>Crear un nuevo mueble</strong>: Maneja las solicitudes POST en la ruta &#39;/furnitures&#39;. Crea un nuevo mueble con los datos proporcionados en el cuerpo de la solicitud y lo guarda en la base de datos.</p>
+</li>
+<li><p><strong>Obtener muebles por nombre, descripción, color o todos ellos</strong>: Maneja las solicitudes GET en la ruta &#39;/furnitures&#39;. Recupera todos los muebles que coinciden con los filtros proporcionados en la consulta. Si no se proporciona ningún filtro, se devuelven todos los muebles.</p>
+</li>
+<li><p><strong>Obtener un mueble por ID</strong>: Maneja las solicitudes GET en la ruta &#39;/furnitures/:id&#39;. Busca un mueble por su ID y lo devuelve si se encuentra.</p>
+</li>
+<li><p><strong>Actualizar un mueble por nombre, descripción, color o todos ellos</strong>: Maneja las solicitudes PATCH en la ruta &#39;/furnitures&#39; y &#39;/furnitures/:id&#39;. Actualiza un mueble según los datos proporcionados en el cuerpo de la solicitud y el filtro opcional por ID.</p>
+</li>
+<li><p><strong>Eliminar un mueble por nombre, descripción, color o todos ellos</strong>: Maneja las solicitudes DELETE en la ruta &#39;/furnitures&#39; y &#39;/furnitures/:id&#39;. Elimina un mueble según los filtros proporcionados en la consulta o por su ID.</p>
+</li>
+</ol>
+<p>Estas rutas proporcionan una interfaz para interactuar con la colección de muebles en la base de datos, permitiendo crear, leer, actualizar y eliminar muebles según sea necesario.</p>
+<a id="md:transactionsts" class="tsd-anchor"></a><h4><a href="#md:transactionsts">transactions.ts</a></h4><p>El archivo <code>transactions.ts</code> define un router para manejar las operaciones CRUD relacionadas con las transacciones. Aquí está un resumen de las operaciones definidas:</p>
+<ol>
+<li><p><strong>Crear una nueva transacción</strong>: Maneja las solicitudes POST en la ruta &#39;/transactions&#39;. Crea una nueva transacción con los datos proporcionados en el cuerpo de la solicitud, valida la entidad asociada y los muebles involucrados, y luego la guarda en la base de datos.</p>
+</li>
+<li><p><strong>Obtener transacciones por rango de fechas, tipo, CIF/NIF o todos ellos</strong>: Maneja las solicitudes GET en la ruta &#39;/transactions&#39;. Recupera las transacciones que coinciden con los filtros proporcionados en la consulta, como el rango de fechas, el tipo de transacción y la identificación de la entidad (proveedor o cliente).</p>
+</li>
+<li><p><strong>Obtener una transacción por ID</strong>: Maneja las solicitudes GET en la ruta &#39;/transactions/:id&#39;. Busca una transacción por su ID y la devuelve si se encuentra.</p>
+</li>
+<li><p><strong>Actualizar una transacción por ID</strong>: Maneja las solicitudes PATCH en la ruta &#39;/transactions/:id&#39;. Actualiza una transacción según los datos proporcionados en el cuerpo de la solicitud y el ID de la transacción. Esto implica validar y actualizar los muebles involucrados y recalcular el importe total de la transacción.</p>
+</li>
+<li><p><strong>Eliminar una transacción por ID</strong>: Maneja las solicitudes DELETE en la ruta &#39;/transactions/:id&#39;. Elimina una transacción según su ID.</p>
+</li>
+</ol>
+<p>Estas rutas permiten crear, leer, actualizar y eliminar transacciones, proporcionando una interfaz para interactuar con la colección de transacciones en la base de datos.</p>
+<a id="md:indexts" class="tsd-anchor"></a><h4><a href="#md:indexts">index.ts</a></h4><p>El archivo <code>index.ts</code> inicializa la aplicación Express y configura las rutas para los diferentes recursos de la API, como clientes, proveedores, muebles y transacciones. Aquí está el resumen:</p>
+<ol>
+<li>Importa Express y el archivo de configuración de la base de datos (<code>mongoose.js</code>).</li>
+<li>Importa los routers para los diferentes recursos de la API: <code>customerRouter</code>, <code>providerRouter</code>, <code>furnitureRouter</code>, <code>transactionRouter</code> y <code>defaultRouter</code>.</li>
+<li>Configura la aplicación Express utilizando <code>express.json()</code> para analizar el cuerpo de las solicitudes entrantes como JSON.</li>
+<li>Asocia cada router con su correspondiente prefijo de ruta utilizando <code>app.use()</code>.</li>
+<li>Configura el puerto del servidor para escuchar las solicitudes entrantes. Utiliza el puerto proporcionado por la variable de entorno <code>process.env.PORT</code> o el puerto 3000 de forma predeterminada.</li>
+<li>Inicia el servidor y lo hace escuchar en el puerto configurado, mostrando un mensaje en la consola indicando que el servidor está arriba y funcionando.</li>
+</ol>
+<p>Este archivo inicializa la API y la hace accesible para manejar las solicitudes HTTP relacionadas con clientes, proveedores, muebles, transacciones y rutas predeterminadas.</p>
+<a id="md:tests" class="tsd-anchor"></a><h3><a href="#md:tests">Tests</a></h3><a id="md:customersspects" class="tsd-anchor"></a><h4><a href="#md:customersspects">customers.spec.ts</a></h4><p>Este archivo contiene una serie de pruebas para el recurso &quot;clientes&quot; de la API. Aquí tienes un resumen de las pruebas realizadas:</p>
+<ol>
+<li><p><strong>Creación de Cliente</strong>:</p>
+<ul>
+<li>Se realizan pruebas para crear un nuevo cliente y se verifica que la solicitud sea exitosa (estado 201).</li>
+<li>Se comprueba que los datos del cliente creado coincidan con los proporcionados en la solicitud.</li>
+</ul>
+</li>
+<li><p><strong>Validaciones de Creación de Cliente</strong>:</p>
+<ul>
+<li>Se realizan pruebas para verificar que se generen errores al intentar crear un cliente con formatos de datos incorrectos o faltantes (nombre, NIF, email, etc.).</li>
+<li>Se verifica que se reciba el código de estado 400 en caso de error.</li>
+</ul>
+</li>
+<li><p><strong>Validaciones de NIF, Email y Teléfono Únicos</strong>:</p>
+<ul>
+<li>Se realizan pruebas para verificar que no se pueda crear un cliente con un NIF, email o teléfono que ya exista en la base de datos.</li>
+<li>Se verifica que se reciba el código de estado 400 en caso de intentar crear un cliente con datos duplicados.</li>
+</ul>
+</li>
+<li><p><strong>Obtención de Clientes</strong>:</p>
+<ul>
+<li>Se realizan pruebas para obtener todos los clientes y se verifica que la solicitud sea exitosa (estado 200).</li>
+<li>Se comprueba que la respuesta contenga la cantidad esperada de clientes.</li>
+</ul>
+</li>
+<li><p><strong>Obtención de Cliente por NIF</strong>:</p>
+<ul>
+<li>Se realizan pruebas para obtener un cliente por su NIF y se verifica que la solicitud sea exitosa (estado 200).</li>
+<li>Se comprueba que la respuesta contenga el cliente esperado.</li>
+</ul>
+</li>
+<li><p><strong>Obtención de Cliente por ID</strong>:</p>
+<ul>
+<li>Se realizan pruebas para obtener un cliente por su ID y se verifica que la solicitud sea exitosa (estado 200).</li>
+<li>Se comprueba que la respuesta contenga el cliente esperado.</li>
+</ul>
+</li>
+<li><p><strong>Actualización de Cliente por NIF o ID</strong>:</p>
+<ul>
+<li>Se realizan pruebas para actualizar un cliente por su NIF o ID y se verifica que la solicitud sea exitosa (estado 200).</li>
+<li>Se comprueba que los datos del cliente se hayan actualizado correctamente.</li>
+</ul>
+</li>
+<li><p><strong>Validaciones de Actualización de Cliente</strong>:</p>
+<ul>
+<li>Se realizan pruebas para verificar que se generen errores al intentar actualizar un cliente con datos incorrectos.</li>
+<li>Se verifica que se reciba el código de estado 400 en caso de error.</li>
+</ul>
+</li>
+<li><p><strong>Eliminación de Cliente por NIF o ID</strong>:</p>
+<ul>
+<li>Se realizan pruebas para eliminar un cliente por su NIF o ID y se verifica que la solicitud sea exitosa (estado 200).</li>
+<li>Se comprueba que el cliente haya sido eliminado de la base de datos.</li>
+</ul>
+</li>
+<li><p><strong>Validaciones de Eliminación de Cliente</strong>:</p>
+<ul>
+<li>Se realizan pruebas para verificar que se generen errores al intentar eliminar un cliente con un ID inválido.</li>
+<li>Se verifica que se reciba el código de estado 404 en caso de error.</li>
+</ul>
+</li>
+</ol>
+<a id="md:providersspects" class="tsd-anchor"></a><h4><a href="#md:providersspects">providers.spec.ts</a></h4><p>El archivo <code>providers.spec.ts</code> contiene una serie de pruebas unitarias para la funcionalidad relacionada con los proveedores en tu aplicación. Aquí está un resumen de las pruebas que se realizan:</p>
+<ol>
+<li><p><strong>Creación de Proveedores</strong>: Se prueban las solicitudes para crear nuevos proveedores, verificando que los datos ingresados se guarden correctamente en la base de datos y que se devuelva el código de estado 201 (creado).</p>
+</li>
+<li><p><strong>Validación de Formato de Datos</strong>: Se realizan pruebas para verificar que los datos ingresados cumplan con los formatos esperados. Se incluyen casos de nombres inválidos, CIFs (Código de Identificación Fiscal) inválidos y correos electrónicos inválidos. Se espera que se devuelva el código de estado 400 (solicitud incorrecta) en caso de que los datos no cumplan con los requisitos.</p>
+</li>
+<li><p><strong>Validación de Valores Requeridos</strong>: Se prueban las solicitudes para crear proveedores sin proporcionar todos los valores requeridos. Se espera que se devuelva el código de estado 400 en estos casos.</p>
+</li>
+<li><p><strong>Duplicación de Datos</strong>: Se realizan pruebas para verificar que no se puedan crear proveedores con datos que ya existen en la base de datos. Se incluyen casos de CIFs duplicados, correos electrónicos duplicados y números de teléfono duplicados. Se espera que se devuelva el código de estado 400 en caso de que se intente crear un proveedor con datos duplicados.</p>
+</li>
+<li><p><strong>Obtención de Proveedores</strong>: Se prueban las solicitudes para obtener todos los proveedores y para obtener un proveedor específico por su CIF o ID. Se espera que se devuelva el código de estado 200 (OK) cuando se encuentren los datos solicitados y el código de estado 404 (no encontrado) cuando no se encuentren.</p>
+</li>
+<li><p><strong>Actualización de Proveedores</strong>: Se prueban las solicitudes para actualizar proveedores tanto por su CIF como por su ID. Se incluyen casos para actualizar el nombre, la dirección, el correo electrónico y el número de teléfono. Se espera que se devuelva el código de estado 200 cuando la actualización sea exitosa y el código de estado 404 cuando el proveedor no sea encontrado.</p>
+</li>
+<li><p><strong>Eliminación de Proveedores</strong>: Se prueban las solicitudes para eliminar proveedores tanto por su CIF como por su ID. Se espera que se devuelva el código de estado 200 cuando la eliminación sea exitosa y el código de estado 404 cuando el proveedor no sea encontrado.</p>
+</li>
+</ol>
+<a id="md:furnituresspects" class="tsd-anchor"></a><h4><a href="#md:furnituresspects">furnitures.spec.ts</a></h4><p>El archivo <code>furnitures.spec.ts</code> contiene una serie de pruebas unitarias para la funcionalidad relacionada con los muebles en tu aplicación. Aquí está un resumen de las pruebas que se realizan:</p>
+<ol>
+<li><p><strong>Creación de Muebles</strong>: Se prueban las solicitudes para crear nuevos muebles, verificando que los datos ingresados se guarden correctamente en la base de datos y que se devuelva el código de estado 201 (creado).</p>
+</li>
+<li><p><strong>Validación de Datos Requeridos</strong>: Se prueban las solicitudes para crear muebles sin proporcionar todos los valores requeridos. Se espera que se devuelva el código de estado 400 en estos casos.</p>
+</li>
+<li><p><strong>Validación de Formato de Datos</strong>: Se realizan pruebas para verificar que los datos ingresados cumplan con los formatos esperados. Se incluyen casos de nombres inválidos y tipos de muebles no permitidos. Se espera que se devuelva el código de estado 400 en caso de que los datos no cumplan con los requisitos.</p>
+</li>
+<li><p><strong>Obtención de Muebles</strong>: Se prueban las solicitudes para obtener todos los muebles y para obtener un mueble específico por su nombre o ID. Se espera que se devuelva el código de estado 200 (OK) cuando se encuentren los datos solicitados y el código de estado 404 (no encontrado) cuando no se encuentren.</p>
+</li>
+<li><p><strong>Actualización de Muebles</strong>: Se prueban las solicitudes para actualizar muebles tanto por su nombre como por su ID. Se espera que se devuelva el código de estado 200 cuando la actualización sea exitosa y el código de estado 404 cuando el mueble no sea encontrado.</p>
+</li>
+<li><p><strong>Eliminación de Muebles</strong>: Se prueban las solicitudes para eliminar muebles tanto por su nombre como por su ID. Se espera que se devuelva el código de estado 200 cuando la eliminación sea exitosa y el código de estado 404 cuando el mueble no sea encontrado.</p>
+</li>
+</ol>
+<a id="md:transactionsspects" class="tsd-anchor"></a><h4><a href="#md:transactionsspects">transactions.spec.ts</a></h4><p>El archivo <code>transactions.spec.ts</code> contiene una serie de pruebas unitarias para la funcionalidad relacionada con las transacciones en tu aplicación. Aquí está un resumen de las pruebas que se realizan:</p>
+<ol>
+<li><p><strong>Creación de Transacciones</strong>: Se prueban las solicitudes para crear diferentes tipos de transacciones, como órdenes de venta, órdenes de compra, reembolsos de clientes y reembolsos a proveedores. Se verifica que los datos ingresados se guarden correctamente en la base de datos y que se devuelva el código de estado 201 (creado).</p>
+</li>
+<li><p><strong>Validación de Datos Requeridos</strong>: Se prueban las solicitudes para crear transacciones sin proporcionar todos los valores requeridos. Se espera que se devuelva el código de estado 400 en estos casos.</p>
+</li>
+<li><p><strong>Validación de Entidades y Tipos de Transacciones</strong>: Se prueban las solicitudes para crear transacciones con entidades y tipos de transacciones válidos. Se espera que se devuelva el código de estado 400 en caso de que los datos no cumplan con los requisitos.</p>
+</li>
+<li><p><strong>Obtención de Transacciones</strong>: Se prueban las solicitudes para obtener todas las transacciones y para obtener transacciones filtradas por rango de fechas, tipo de transacción y entidad asociada. Se espera que se devuelva el código de estado 200 (OK) cuando se encuentren los datos solicitados y el código de estado 400 (error de solicitud) cuando los filtros no sean válidos.</p>
+</li>
+<li><p><strong>Actualización de Transacciones</strong>: Se prueban las solicitudes para actualizar transacciones por su ID. Se verifica que la actualización sea exitosa y que se devuelva el código de estado 200. También se prueban escenarios donde se intenta actualizar transacciones con identificadores inválidos o actualizaciones no permitidas, esperando códigos de estado 400 en esos casos.</p>
+</li>
+<li><p><strong>Eliminación de Transacciones</strong>: Se prueban las solicitudes para eliminar transacciones por su ID. Se espera que se devuelva el código de estado 200 cuando la eliminación sea exitosa y el código de estado 400 cuando el identificador de la transacción no sea válido.</p>
+</li>
+</ol>
+<hr>
+<a id="md:conclusión" class="tsd-anchor"></a><h2><a href="#md:conclusión">Conclusión</a></h2><p>En esta práctica de desarrollo de un API REST con Node.js y Express para gestionar una tienda de muebles ficticia, denominada DSIkea, hemos logrado alcanzar los objetivos planteados, aplicando los conocimientos adquiridos durante el curso en el desarrollo de sistemas web utilizando tecnologías modernas.</p>
+<p>Al analizar la implementación del método findOneAndUpdate en la operación de actualización parcial (PATCH) de los muebles, hemos observado que esta función actualiza la primera entrada de la consulta que cumple los filtros, incluso si existen múltiples resultados que cumplen con los criterios de búsqueda. Este comportamiento puede generar resultados inesperados si no se tiene en cuenta adecuadamente al diseñar y realizar operaciones de actualización en la base de datos.</p>
+<p>Además, al gestionar las órdenes de venta (Sell Order), hemos observado que si se compra exactamente la cantidad de muebles que hay en stock, el stock se actualiza a 0 en nuestra base de datos de muebles. Esta decisión se basa en la premisa de que el cliente todavía puede devolver dicho pedido (Refund from client), lo que implicaría la reposición del stock. Es importante tener en cuenta esta lógica al diseñar y gestionar las transacciones de venta en el sistema.</p>
+<p>Durante el desarrollo de la práctica, nos enfrentamos a varios errores y dificultades. En primer lugar, experimentamos solapamientos en las bases de datos durante las pruebas, debido a la falta de configuración adecuada al realizar git push. Para resolver este problema, implementamos un directorio de configuración con archivos de entorno .env.</p>
+<p>Además, al desplegar el proyecto en Render y realizar pruebas con Thunder Client en Visual Studio Code, nos encontramos con el error 502 Bad Gateway, que ralentizó nuestras pruebas para verificar el correcto funcionamiento de las peticiones HTTP. Esta dificultad nos permitió aprender sobre la importancia de la gestión de errores y la depuración en entornos de despliegue en la nube.</p>
+<p>En resumen, la práctica nos ha brindado una experiencia valiosa en el diseño, desarrollo y despliegue de un API REST utilizando tecnologías modernas, así como la resolución de problemas y la gestión de errores en un entorno de desarrollo real.</p>
+<hr>
 <a id="md:bibliografía" class="tsd-anchor"></a><h2><a href="#md:bibliografía">Bibliografía</a></h2><ul>
 <li><a href="https://ull-esit-inf-dsi-2324.github.io/prct13-DSIkea-api/">Enunciado de la práctica</a></li>
 <li><a href="https://samueleresca.net/solid-principles-using-typescript/">Principios Solid</a></li>
@@ -45,4 +297,4 @@
 <li><a href="https://ull-esit-inf-dsi-2324.github.io/nodejs-theory/">Apuntes de la asignatura</a></li>
 <li><a href="https://github.com/ULL-ESIT-INF-DSI-2324/ull-esit-inf-dsi-23-24-prct13-dsikea-api-groupf">Repositorio en Github de la práctica</a></li>
 </ul>
-</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:práctica-13---dsikea-api-rest-con-nodeexpress"><span>Práctica 13 -<wbr/> DSIkea: API REST con <wbr/>Node/<wbr/>Express</span></a><ul><li><a href="#md:índice"><span>Índice</span></a></li><li><a href="#md:introducción"><span>Introducción</span></a></li><li><a href="#md:objetivos"><span>Objetivos</span></a></li><li><a href="#md:tests-y-código-implementado"><span>Tests y <wbr/>Código <wbr/>Implementado</span></a></li><li><a href="#md:conclusión"><span>Conclusión</span></a></li><li><a href="#md:bibliografía"><span>Bibliografía</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="index.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>p13</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:práctica-13---dsikea-api-rest-con-nodeexpress"><span>Práctica 13 -<wbr/> DSIkea: API REST con <wbr/>Node/<wbr/>Express</span></a><ul><li><a href="#md:índice"><span>Índice</span></a></li><li><a href="#md:introducción"><span>Introducción</span></a></li><li><a href="#md:objetivos"><span>Objetivos</span></a></li><li><a href="#md:tests-y-código-implementado"><span>Tests y <wbr/>Código <wbr/>Implementado</span></a></li><li><ul><li><a href="#md:código-implementado"><span>Código <wbr/>Implementado</span></a></li><li><ul><li><a href="#md:mongoosets"><span>mongoose.ts</span></a></li><li><a href="#md:customerts"><span>customer.ts</span></a></li><li><a href="#md:providerts"><span>provider.ts</span></a></li><li><a href="#md:furniturets"><span>furniture.ts</span></a></li><li><a href="#md:transactionts"><span>transaction.ts</span></a></li><li><a href="#md:defaultts"><span>default.ts</span></a></li><li><a href="#md:customersts"><span>customers.ts</span></a></li><li><a href="#md:providersts"><span>providers.ts</span></a></li><li><a href="#md:furniturests"><span>furnitures.ts</span></a></li><li><a href="#md:transactionsts"><span>transactions.ts</span></a></li><li><a href="#md:indexts"><span>index.ts</span></a></li></ul></li><li><a href="#md:tests"><span>Tests</span></a></li><li><ul><li><a href="#md:customersspects"><span>customers.spec.ts</span></a></li><li><a href="#md:providersspects"><span>providers.spec.ts</span></a></li><li><a href="#md:furnituresspects"><span>furnitures.spec.ts</span></a></li><li><a href="#md:transactionsspects"><span>transactions.spec.ts</span></a></li></ul></li></ul></li><li><a href="#md:conclusión"><span>Conclusión</span></a></li><li><a href="#md:bibliografía"><span>Bibliografía</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="index.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>p13</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
